@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gardner College Cainta - Student Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <img src="/Images/gardner logo.png" alt="Gardner College Logo">
+                <h1>Gardner College <span>Cainta</span></h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" class="active">Home</a></li>
+                <li><a href="#enrollment">Enrollment</a></li>
+                <li><a href="#portal">Student Portal</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <button class="btn login-btn" id="loginBtn">Login</button>
+                <button class="btn register-btn" id="registerBtn">Register</button>
+            </div>
+            <div class="hamburger">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Welcome to Gardner College Cainta</h1>
+                <h2>Online Enrollment & Student Portal System</h2>
+                <p>Manage your academic journey with ease. Enroll in courses, check grades, and access resources all in one place.</p>
+                <div class="hero-buttons">
+                    <button class="btn primary-btn" id="exploreBtn">Explore Portal</button>
+                    <button class="btn secondary-btn" id="enrollNowBtn">Enroll Now</button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="/Images/gardner.jpg" alt="Gardner">
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features" id="enrollment">
+            <h2 class="section-title">Key Features</h2>
+            <div class="features-container">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h3>Online Enrollment</h3>
+                    <p>Complete your enrollment process online without the need to visit the campus physically.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3>Course Management</h3>
+                    <p>Browse, select, and manage your courses with our intuitive course management system.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Grade Tracking</h3>
+                    <p>View your academic progress and track your grades in real-time throughout the semester.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3>Class Schedule</h3>
+                    <p>Access your personalized class schedule with details about room and instructor.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Portal Preview Section -->
+        <section class="portal-preview" id="portal">
+            <h2 class="section-title">Student Portal Preview</h2>
+            <div class="preview-container">
+                <div class="preview-tabs">
+                    <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+                    <button class="tab-btn" data-tab="enrollment">Enrollment</button>
+                    <button class="tab-btn" data-tab="grades">Grades</button>
+                    <button class="tab-btn" data-tab="schedule">Schedule</button>
+                </div>
+                <div class="preview-content">
+                    <div class="tab-content active" id="dashboard-content">
+                        <img src="/Images/dashboard.png" alt="Dashboard Preview">
+                        <div class="tab-description">
+                            <h3>Student Dashboard</h3>
+                            <p>Get a comprehensive overview of your academic status, upcoming events, announcements, and quick access to all portal features.</p>
+                        </div>
+                    </div>
+                    <div class="tab-content" id="enrollment-content">
+                        <img src="/Images/Screenshot_611.png" alt="Enrollment Preview">
+                        <div class="tab-description">
+                            <h3>Enrollment Process</h3>
+                            <p>Complete your enrollment in just a few steps. Select courses, confirm your schedule, and process payments seamlessly.</p>
+                        </div>
+                    </div>
+                    <div class="tab-content" id="grades-content">
+                        <img src="/Images/grade.png" alt="Grades Preview">
+                        <div class="tab-description">
+                            <h3>Grade Monitoring</h3>
+                            <p>View your current and past semester grades, GPA calculator, and academic performance trends.</p>
+                        </div>
+                    </div>
+                    <div class="tab-content" id="schedule-content">
+                        <img src="/Images/Screenshot (769).png" alt="Schedule Preview">
+                        <div class="tab-description">
+                            <h3>Class Schedule</h3>
+                            <p>Access your weekly schedule with room assignments, professor information, and important class dates.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="how-it-works">
+            <h2 class="section-title">How It Works</h2>
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Register an Account</h3>
+                        <p>Create your student account with your school ID and personal information.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Complete Your Profile</h3>
+                        <p>Fill in required details and submit necessary documents for verification.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Enrollment Process</h3>
+                        <p>Browse available courses, select your preferred schedule, and complete enrollment.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Access Full Features</h3>
+                        <p>Enjoy all portal features including grade tracking, announcements, and resources.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="about-section" id="about">
+            <div class="about-content">
+                <h2 class="section-title">About Gardner College Cainta</h2>
+                <p>Gardner College Cainta is committed to providing quality education and excellent student services. Our online enrollment and student portal system is designed to enhance the academic experience of our students by providing convenient access to resources and efficient administrative processes.</p>
+                <p>Founded with a vision to nurture future leaders, Gardner College offers a wide range of programs designed to prepare students for successful careers in their chosen fields.</p>
+                <button class="btn primary-btn">Learn More</button>
+            </div>
+            <div class="about-image">
+                <img src="/Images/enrollment.jpg" alt="Gardner College Campus">
+            </div>
+        </section>
+
+        
+
+        
+
+        <!-- Contact Section -->
+        <section class="contact-section" id="contact">
+            <h2 class="section-title">Contact Us</h2>
+            <div class="contact-container">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h3>Address</h3>
+                            <p>RDS Building, Sta Lucia Drive Felix Avenue Barangay San Isidro 1900 Cainta, Rizal, Philippines</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h3>Phone</h3>
+                            <p>0917 189 1042</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h3>Email</h3>
+                            <p>marketing_cainta@gardner.edu.ph</p>
+                        </div>
+                    </div>
+                    <div class="social-media">
+                        <a href="https://www.facebook.com/gardnercainta" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        
+                    </div>
+                </div>
+                
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="data:image/png;base64,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" alt="Gardner College Logo">
+                <h3>Gardner College Cainta</h3>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#enrollment">Enrollment</a></li>
+                        <li><a href="#portal">Student Portal</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Gardner College Cainta. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Modal Components -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Login to Student Portal</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="studentId">Student ID</label>
+                    <input type="text" id="studentId" name="studentId" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                    <span class="password-toggle"><i class="far fa-eye"></i></span>
+                </div>
+                <div class="form-options">
+                    <div class="remember-me">
+                        <input type="checkbox" id="rememberMe">
+                        <label for="rememberMe">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-password">Forgot Password?</a>
+                </div>
+                <button type="submit" class="btn primary-btn">Login</button>
+            </form>
+            <div class="alternate-action">
+                <p>Don't have an account? <a href="#" id="showRegister">Register Now</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Create Student Account</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="regStudentId">Student ID</label>
+                    <input type="text" id="regStudentId" name="regStudentId" required>
+                </div>
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" required>
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Email Address</label>
+                    <input type="email" id="regEmail" name="regEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Password</label>
+                    <input type="password" id="regPassword" name="regPassword" required>
+                    <span class="password-toggle"><i class="far fa-eye"></i></span>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                </div>
+                <div class="form-options">
+                    <div class="terms-agreement">
+                        <input type="checkbox" id="agreeTerms" required>
+                        <label for="agreeTerms">I agree to the <a href="#">Terms and Conditions</a></label>
+                    </div>
+                </div>
+                <button type="submit" class="btn primary-btn">Register</button>
+            </form>
+            <div class="alternate-action">
+                <p>Already have an account? <a href="#" id="showLogin">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>

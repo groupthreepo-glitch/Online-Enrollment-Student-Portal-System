@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role Selection Registration Form</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --accent-color: #9b59b6;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+            --text-color: #333;
+            --grey-color: #95a5a6;
+            --light-grey: #f5f5f5;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4eaef 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            position: relative;
+        }
+
+        .form-container {
+            width: 50%;
+            padding: 40px;
+            transition: var(--transition);
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .form-container.hidden {
+            opacity: 0;
+            transform: translateX(-100%);
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .image-container {
+            width: 50%;
+            background: linear-gradient(to right, rgba(52, 152, 219, 0.8), rgba(44, 62, 80, 0.8)), url('/Images/gardner\ logo.png');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            color: var(--dark-color);
+        }
+
+        .logo span {
+            color: var(--primary-color);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: var(--dark-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 42px;
+            cursor: pointer;
+            color: var(--grey-color);
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .remember-me, .terms-agreement {
+            display: flex;
+            align-items: center;
+        }
+
+        .remember-me input, .terms-agreement input {
+            margin-right: 8px;
+        }
+
+        .forgot-password {
+            color: var(--primary-color);
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 12px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .alternate-action {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        .alternate-action a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .alternate-action a:hover {
+            text-decoration: underline;
+        }
+
+        .social-login {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .social-login p {
+            color: var(--grey-color);
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .social-login p::before, .social-login p::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background-color: #ddd;
+        }
+
+        .social-login p::before {
+            left: 0;
+        }
+
+        .social-login p::after {
+            right: 0;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--light-color);
+            color: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .social-icon:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .image-content h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .image-content p {
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .switch-form-btn {
+            background-color: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .switch-form-btn:hover {
+            background-color: white;
+            color: var(--primary-color);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 2% auto;
+    padding: 20px;
+    border: none;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 15px;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+}
+
+.modal h1 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    padding-right: 40px;
+}
+
+.modal h2 {
+    color: var(--dark-color);
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    border-bottom: 2px solid var(--light-color);
+    padding-bottom: 5px;
+}
+
+.modal h3 {
+    color: var(--dark-color);
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.modal p, .modal li {
+    line-height: 1.6;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.modal ul {
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+.modal strong {
+    color: var(--dark-color);
+}
+
+.modal-footer {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.modal-accept-btn {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.modal-accept-btn:hover {
+    background-color: #2980b9;
+}
+
+.terms-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.terms-link:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        margin: 5% auto;
+        padding: 15px;
+    }
+}
+
+/* ==============================================
+   ADD THESE CSS RULES TO YOUR <style> SECTION TO IMPROVE THE MODAL
+   Find the existing modal styles and add/replace with these improvements:
+   ============================================== */
+
+/* Improved Modal Overlay */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Darker overlay */
+    overflow-y: auto;
+    backdrop-filter: blur(3px); /* Add blur effect to background */
+}
+
+/* Improved Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: 2% auto;
+    padding: 30px;
+    border: none;
+    border-radius: 15px; /* More rounded corners */
+    width: 90%;
+    max-width: 800px;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalSlideIn 0.4s ease-out;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); /* Enhanced shadow */
+}
+
+/* Enhanced Animation */
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-100px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Improved Close Button */
+.close {
+    color: #999;
+    float: right;
+    font-size: 32px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    right: 25px;
+    top: 20px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.close:hover,
+.close:focus {
+    color: #fff;
+    background-color: #e74c3c;
+    text-decoration: none;
+    transform: scale(1.1);
+}
+
+/* Enhanced Modal Header */
+.modal h1 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    padding-right: 50px;
+    font-size: 2rem;
+    border-bottom: 3px solid var(--primary-color);
+    padding-bottom: 10px;
+}
+
+/* Better Modal Footer */
+.modal-footer {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 25px;
+    border-top: 2px solid #eee;
+    background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+    margin: 30px -30px -30px -30px;
+    padding: 25px 30px;
+    border-radius: 0 0 15px 15px;
+}
+
+/* Enhanced Accept Button */
+.modal-accept-btn {
+    background: linear-gradient(145deg, var(--primary-color), #2980b9);
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.modal-accept-btn:hover {
+    background: linear-gradient(145deg, #2980b9, var(--primary-color));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+}
+
+.modal-accept-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(52, 152, 219, 0.3);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        margin: 5% auto;
+        padding: 20px;
+        border-radius: 10px;
+    }
+    
+    .modal h1 {
+        font-size: 1.5rem;
+        padding-right: 40px;
+    }
+    
+    .close {
+        font-size: 28px;
+        right: 15px;
+        top: 15px;
+    }
+    
+    .modal-accept-btn {
+        padding: 12px 30px;
+        font-size: 1rem;
+    }
+}
+
+/* Focus styles for accessibility */
+.modal-accept-btn:focus {
+    outline: 3px solid rgba(52, 152, 219, 0.5);
+    outline-offset: 2px;
+}
+
+/* Scroll improvements */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: #2980b9;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container" id="loginForm">
+            <div class="logo">
+                <img src="data:image/png;base64,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" alt="Gardner College Logo">
+                <h1>Gardner College <span>Cainta</span></h1>
+            </div>
+            <h2>Login to Your Account</h2>
+            <form>
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password">
+                    <i class="fas fa-eye password-toggle" id="loginPasswordToggle"></i>
+                </div>
+                
+                <button type="button" class="btn">Login</button>
+            </form>
+            <div class="alternate-action">
+                <p>Don't have an account? <a href="#" id="showRegisterBtn">Register</a></p>
+            </div>
+            
+        </div>
+        
+        <div class="form-container hidden" id="registerForm">
+            <div class="logo">
+                <img src="data:image/png;base64,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" alt="Gardner College Logo">
+                <h1>Gardner College <span>Cainta</span></h1>
+            </div>
+            <h2>Create Your Account</h2>
+            
+            
+            
+            <form>
+                <div class="form-group">
+                    <label for="registerName">Full Name</label>
+                    <input type="text" id="registerName" placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" placeholder="Enter your email">
+                    <span class="email-role-hint" id="emailRoleHint"></span>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" placeholder="Enter your password">
+                    <i class="fas fa-eye password-toggle" id="registerPasswordToggle"></i>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm your password">
+                    <i class="fas fa-eye password-toggle" id="confirmPasswordToggle"></i>
+                </div>
+                <div class="form-options">
+                    <div class="terms-agreement">
+    <input type="checkbox" id="termsAgreement">
+    <label for="termsAgreement">I agree to the <a href="#" class="terms-link" id="openTermsModal">Terms and Conditions</a></label>
+</div>
+
+<!-- Add this Modal HTML before the closing </body> tag -->
+<div id="termsModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeTermsModal">&times;</span>
+        
+        <h1>Terms and Conditions</h1>
+        <p><strong>Gardner College Cainta Online Enrollment and Student Portal System</strong></p>
+        <p><strong>Effective Date:</strong> August 25, 2025<br>
+        <strong>Last Updated:</strong> August 19, 2025</p>
+        <hr>
+
+        <h2>1. Acceptance of Terms</h2>
+        <p>By accessing and using the Gardner College Cainta Online Enrollment and Student Portal System ("the System"), you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions. If you do not agree to these terms, please do not use the System.</p>
+
+        <h2>2. System Description and Purpose</h2>
+        <p>The Gardner College Cainta Online Enrollment and Student Portal System is designed to:</p>
+        <ul>
+            <li>Facilitate online enrollment for prospective and current students</li>
+            <li>Provide access to academic records, grades, and schedules</li>
+            <li>Enable communication between students, faculty, and administration</li>
+            <li>Manage course registration and academic planning</li>
+            <li>Process payments for tuition and fees</li>
+        </ul>
+
+        <h2>3. User Eligibility and Account Registration</h2>
+        <h3>3.1 Eligibility</h3>
+        <ul>
+            <li><strong>Students:</strong> Current and prospective students of Gardner College Cainta</li>
+            <li><strong>Faculty:</strong> Authorized teaching staff and academic personnel</li>
+            <li><strong>Administrator:</strong> Administrative personnel with approved access</li>
+            <li><strong>Registrar:</strong> Authorized Handling Student Information</li>
+        </ul>
+
+        <h3>3.2 Account Registration</h3>
+        <ul>
+            <li>Users must provide accurate, complete, and current information</li>
+            <li>Each user is responsible for maintaining the confidentiality of their login credentials</li>
+            <li>Users must immediately notify the college of any unauthorized use of their account</li>
+            <li>False information provided during registration may result in account termination</li>
+        </ul>
+
+        <h2>4. User Responsibilities and Conduct</h2>
+        <h3>4.1 Acceptable Use</h3>
+        <p>Users agree to:</p>
+        <ul>
+            <li>Use the System only for legitimate educational and administrative purposes</li>
+            <li>Respect the privacy and rights of other users</li>
+            <li>Comply with all applicable laws and college policies</li>
+            <li>Maintain the security of their account credentials</li>
+        </ul>
+
+        <h3>4.2 Prohibited Activities</h3>
+        <p>Users shall not:</p>
+        <ul>
+            <li>Share login credentials with unauthorized individuals</li>
+            <li>Attempt to gain unauthorized access to restricted areas</li>
+            <li>Upload malicious software or harmful content</li>
+            <li>Use the System for commercial purposes without authorization</li>
+            <li>Interfere with the System's operation or security features</li>
+            <li>Engage in harassment, discrimination, or inappropriate behavior</li>
+        </ul>
+
+        <h2>5. Privacy and Data Protection</h2>
+        <h3>5.1 Information Collection</h3>
+        <p>The System collects and processes:</p>
+        <ul>
+            <li>Personal identification information (name, address, contact details)</li>
+            <li>Academic records and educational history</li>
+            <li>Financial information for payment processing</li>
+            <li>System usage data and logs</li>
+        </ul>
+
+        <h2>6. Academic Information and Records</h2>
+        <p>Users are responsible for verifying the accuracy of their academic information. Any discrepancies should be reported immediately to the Registrar's Office.</p>
+
+        <h2>7. Financial Responsibilities</h2>
+        <p>All financial transactions through the System are subject to verification. Payment confirmations do not guarantee enrollment until all requirements are met.</p>
+
+        <h2>8. System Availability and Maintenance</h2>
+        <p>The college strives to maintain system availability but cannot guarantee uninterrupted service. Scheduled maintenance will be announced in advance when possible.</p>
+
+        <h2>9. Contact Information</h2>
+        <p><strong>Gardner College Cainta</strong><br>
+        <strong>Address:</strong> RDS Building, Sta Lucia Drive Felix Avenue Barangay San Isidro 1900 Cainta, Rizal, Philippines<br>
+        <strong>Phone:</strong> 0917 189 1042<br>
+        <strong>Email:</strong> marketing_cainta@gardner.edu.ph</p>
+
+        <div class="modal-footer">
+            <button type="button" class="modal-accept-btn" id="acceptTerms">I Accept These Terms</button>
+        </div>
+    </div>
+</div>
+
+                </div>
+                <button type="button" class="btn">Register</button>
+            </form>
+            <div class="alternate-action">
+                <p>Already have an account? <a href="#" id="showLoginBtn">Login</a></p>
+            </div>
+        </div>
+
+        <div class="image-container">
+            <div class="image-content">
+                <h2 id="banner-title">Welcome Back!</h2>
+                <p id="banner-text">Enter your personal details and start your journey with Gardner College Cainta.</p>
+                <button class="switch-form-btn" id="switchBtn">Register Now</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    // Terms and Conditions Modal Functionality
+    const modal = document.getElementById('termsModal');
+    const openBtn = document.getElementById('openTermsModal');
+    const closeBtn = document.getElementById('closeTermsModal');
+    const acceptBtn = document.getElementById('acceptTerms');
+    const checkbox = document.getElementById('termsAgreement');
+
+    // Open modal
+    openBtn.onclick = function(e) {
+        e.preventDefault();
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    }
+
+    // Close modal
+    closeBtn.onclick = function() {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto'; // Restore scrolling
+    }
+
+    // Accept terms - FIXED: Now only checks checkbox, doesn't redirect
+    acceptBtn.onclick = function(e) {
+    e.preventDefault(); // ADD THIS LINE - Prevents form submission!
+    e.stopPropagation(); // ADD THIS LINE - Stops event bubbling!
+    
+    checkbox.checked = true;
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto'; // Restore scrolling
+    
+    // Optional: Show a brief confirmation message
+    const confirmMsg = document.createElement('div');
+    confirmMsg.textContent = 'Terms accepted successfully!';
+    confirmMsg.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #2ecc71;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        z-index: 9999;
+        font-size: 14px;
+    `;
+    document.body.appendChild(confirmMsg);
+    
+    // Remove confirmation after 2 seconds
+    setTimeout(() => {
+        if (document.body.contains(confirmMsg)) {
+            document.body.removeChild(confirmMsg);
+        }
+    }, 2000);
+}
+
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restore scrolling
+        }
+    }
+
+    // ==============================================
+    // ADD ENTER KEY FUNCTIONALITY FOR LOGIN
+    // ==============================================
+    
+    // Get login form elements
+    const loginForm = document.querySelector('#loginForm form');
+    const loginEmailInput = document.getElementById('loginEmail');
+    const loginPasswordInput = document.getElementById('loginPassword');
+    const loginButton = document.querySelector('#loginForm .btn');
+
+    // Add Enter key event listeners to login form inputs
+    function handleLoginEnter(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            // Trigger the login button click
+            loginButton.click();
+        }
+    }
+
+    // Attach Enter key listeners to both email and password fields
+    if (loginEmailInput) {
+        loginEmailInput.addEventListener('keypress', handleLoginEnter);
+    }
+    
+    if (loginPasswordInput) {
+        loginPasswordInput.addEventListener('keypress', handleLoginEnter);
+    }
+
+    // Also add Enter key functionality to the entire login form
+    if (loginForm) {
+        loginForm.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                loginButton.click();
+            }
+        });
+    }
+
+    // ==============================================
+    // ADD ENTER KEY FUNCTIONALITY FOR REGISTER FORM (BONUS)
+    // ==============================================
+    
+    const registerForm = document.querySelector('#registerForm form');
+    const registerButton = document.querySelector('#registerForm .btn');
+    const registerInputs = document.querySelectorAll('#registerForm input');
+
+    function handleRegisterEnter(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            // Only trigger register if terms are agreed
+            const termsCheckbox = document.getElementById('termsAgreement');
+            if (termsCheckbox && termsCheckbox.checked) {
+                registerButton.click();
+            } else {
+                // Focus on the terms checkbox or show message
+                if (termsCheckbox) {
+                    termsCheckbox.focus();
+                    alert('Please accept the Terms and Conditions to continue.');
+                }
+            }
+        }
+    }
+
+    // Add Enter key listeners to all register form inputs
+    registerInputs.forEach(input => {
+        input.addEventListener('keypress', handleRegisterEnter);
+    });
+});
+
+
+    </script>
+
+    
+    <script src="login.js"></script>
+</body>
+</html>

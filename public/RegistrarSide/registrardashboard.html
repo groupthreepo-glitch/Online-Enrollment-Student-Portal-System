@@ -1,0 +1,1692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="registrardashboard.css">
+    
+    <style>
+.notification-dropdown.show {
+    display: block !important;
+}
+</style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <!-- User Profile Section -->
+            <div class="user-profile">
+                <div class="avatar" id="avatarContainer">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <div class="user-info">
+                    <h3 id="userName"></h3>
+                    <div class="user-role">Registrar</div>
+                </div>
+            </div>
+            
+            <!-- Navigation Menu -->
+            <div class="menu-label">Navigation</div>
+            <ul class="nav-menu">
+                <li class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span class="nav-text">Dashboard</span>
+                </li>
+                <li class="nav-item" data-section="enrollment">
+                    <i class="fas fa-user-plus"></i>
+                    <span class="nav-text">Enrollment</span>
+                </li>
+                <li class="nav-item" data-section="announcements">
+                    <i class="fas fa-bullhorn"></i>
+                    <span class="nav-text">Announcements</span>
+                    
+                </li>
+                <li class="nav-item" data-section="students">
+                    <i class="fas fa-user-graduate"></i>
+                    <span class="nav-text">Students Info's</span>
+                </li>
+                <li class="nav-item" data-section="courses">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span class="nav-text">Course Management</span>
+                    
+                </li>
+                <li class="nav-item" data-section="messages">
+                    <i class="fas fa-envelope"></i>
+                    <span class="nav-text">Messages</span>
+                    
+                </li>
+            </ul>
+            
+            
+            
+            <!-- Sidebar Footer -->
+            <div class="sidebar-footer">
+                <div class="mode-toggle">
+                    <label for="darkModeToggle">Dark Mode</label>
+                    <div class="switch">
+                        <input type="checkbox" id="darkModeToggle">
+                        <span class="slider"></span>
+                    </div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="logout-text">Logout</span>
+                </button>
+            </div>
+        </nav>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+<header class="enhanced-header">
+    <div class="header-left">
+        <!-- Logo and college info grouped together at the top -->
+        <div class="college-branding">
+            <img src="/Images/gardner logo.png" alt="Gardner College Logo" class="college-logo">
+            <div class="college-info">
+                <h1 class="college-name">Gardner College Cainta</h1>
+                <p class="portal-type">Registrar Portal</p>
+            </div>
+        </div>
+        <div class="header-right"></div>
+            <div class="welcome-section">
+                <div class="welcome-message">Welcome, <span id="welcomeUserName"></span></div>
+            </div>
+        </div>
+    <!-- Notification bell moved to the right side of the header -->
+    <div class="notification-bell-container">
+        <div class="notification-bell" id="notificationBell">
+            <i class="fas fa-bell"></i>
+            
+        </div>
+        
+        <!-- Notification Dropdown -->
+        <div class="notification-dropdown" id="notificationDropdown">
+            <div class="notification-header">
+                <h3>Notifications</h3>
+                <a href="#" class="clear-all" id="clearAllBtn">Mark All as Read</a>
+            </div>
+            <div class="notification-list" id="notificationList">
+                <div class="no-notifications">
+                    <i class="fas fa-bell-slash"></i>
+                    <p>No new notifications</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+            
+            <!-- Dashboard Content -->
+            <div class="content-section active" id="dashboard">
+                <div class="dashboard-grid">
+    <div class="dashboard-card" data-redirect="enrollment">
+        <div class="card-header">
+            <h3 class="card-title">
+                <div class="card-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                Enrollment Requests
+            </h3>
+            <div class="card-options">
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+        </div>
+        <div class="card-content">
+            <p>Manage student enrollment requests and applications. Review, approve, or reject new student registrations.</p>
+        </div>
+        <div class="card-more">
+            Manage Enrollment Requests <i class="fas fa-arrow-right"></i>
+        </div>
+    </div>
+    
+    <div class="dashboard-card" data-redirect="announcements">
+        <div class="card-header">
+            <h3 class="card-title">
+                <div class="card-icon">
+                    <i class="fas fa-bullhorn"></i>
+                </div>
+                Announcements
+            </h3>
+            <div class="card-options">
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+        </div>
+        <div class="card-content">
+            <p>Create and manage college-wide announcements. Keep students and faculty informed about important updates.</p>
+        </div>
+        <div class="card-more">
+            Manage Posts <i class="fas fa-arrow-right"></i>
+        </div>
+    </div>
+    
+    <div class="dashboard-card" data-redirect="students">
+        <div class="card-header">
+            <h3 class="card-title">
+                <div class="card-icon">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                Students Management
+            </h3>
+            <div class="card-options">
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+        </div>
+        <div class="card-content">
+            <p>View and manage student information, enrollment status, and academic records across all programs.</p>
+        </div>
+        <div class="card-more">
+            Manage Students <i class="fas fa-arrow-right"></i>
+        </div>
+    </div>
+    
+    <div class="dashboard-card" data-redirect="courses">
+        <div class="card-header">
+            <h3 class="card-title">
+                <div class="card-icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                Course Management
+            </h3>
+            <div class="card-options">
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+        </div>
+        <div class="card-content">
+            <p>Manage courses, subjects, and academic programs. Add subjects, view curriculum, and generate reports.</p>
+        </div>
+        <div class="card-more">
+            Manage Courses <i class="fas fa-arrow-right"></i>
+        </div>
+    </div>
+    
+    <div class="dashboard-card" data-redirect="messages">
+        <div class="card-header">
+            <h3 class="card-title">
+                <div class="card-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                Messages & Communication
+            </h3>
+            <div class="card-options">
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+        </div>
+        <div class="card-content">
+            <p>Communicate with students, faculty, and administrators. Manage academic conversations and support.</p>
+        </div>
+        <div class="card-more">
+            View Conversations <i class="fas fa-arrow-right"></i>
+        </div>
+    </div>
+</div>
+
+
+            </div>
+
+            <!-- Enrollment Content Section -->
+<div class="content-section" id="enrollment">
+    <div class="enrollment-container">
+        <div class="enrollment-header">
+            <div class="header-left">
+                <i class="fas fa-user-plus"></i>
+                <div>
+                    <h2>Enrollment Requests</h2>
+                    <div class="enrollment-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span id="pending-count">0 Pending</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span id="approved-count">0 Approved</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-times-circle"></i>
+                            <span id="rejected-count">0 Rejected</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="export-btn">
+                    <i class="fas fa-download"></i>
+                    Export Data
+                </button>
+            </div>
+        </div>
+
+        <div class="enrollment-content">
+            <div class="enrollment-filters">
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">All Requests</button>
+                    <button class="filter-btn" data-filter="pending">Pending</button>
+                    <button class="filter-btn" data-filter="approved">Approved</button>
+                    <button class="filter-btn" data-filter="rejected">Rejected</button>
+
+                    <button class="filter-btn" data-filter="regular">Regular Students</button>
+                    <button class="filter-btn" data-filter="irregular">Irregular Students</button>
+                    <button class="filter-btn" data-filter="with-receipt">With Receipt</button>
+                    <button class="filter-btn" data-filter="no-receipt">No Receipt</button>
+                    <button class="filter-btn" data-filter="recent">Recent (7 days)</button>
+                </div>
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" placeholder="Search student name..." id="enrollment-search">
+                </div>
+            </div>
+
+            <div class="enrollment-list" id="enrollment-list">
+                <!-- Enrollment cards will be populated by JavaScript -->
+                <div class="no-enrollments" id="no-enrollments">
+                    <i class="fas fa-user-graduate"></i>
+                    <h3>No Enrollment Requests</h3>
+                    <p>No enrollment requests found matching your criteria.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+            
+            <!-- Enhanced Announcements Content -->
+    <div class="content-section" id="announcements">
+        <div class="announcements-container">
+            <!-- Header -->
+            <div class="announcements-header">
+                <div class="header-left">
+                    <i class="fas fa-bullhorn"></i>
+                    <div>
+                        <h2>Announcements</h2>
+                        <div class="announcement-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-list"></i>
+                                <span id="totalCount">0 Total</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span id="urgentCount">0 Urgent</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="add-announcement-btn" id="addAnnouncementBtn">
+                    <i class="fas fa-plus"></i>
+                    Add Announcement
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="announcements-content">
+                <!-- Filters -->
+                <div class="announcements-filters">
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="urgent">Urgent</button>
+                        <button class="filter-btn" data-filter="important">Important</button>
+                        <button class="filter-btn" data-filter="general">General</button>
+                    </div>
+                    <div class="search-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="search-input" placeholder="Search announcements..." id="announcementSearchInput">
+                    </div>
+                </div>
+
+                <!-- Course Filters -->
+                <div class="course-filters">
+                    <button class="course-btn active" data-course="all">All Courses</button>
+                    <button class="course-btn" data-course="BSIT">BSIT</button>
+                    <button class="course-btn" data-course="BSCS">BSCS</button>
+                    <button class="course-btn" data-course="BSIS">BSIS</button>
+                    <button class="course-btn" data-course="BSBA">BSBA</button>
+                </div>
+
+                <div class="year-filters">
+                    <button class="year-btn active" data-year="all">All Years</button>
+                    <button class="year-btn" data-year="1st-year">1st Year</button>
+                    <button class="year-btn" data-year="2nd-year">2nd Year</button>
+                    <button class="year-btn" data-year="3rd-year">3rd Year</button>
+                    <button class="year-btn" data-year="4th-year">4th Year</button>
+                </div>
+
+                <!-- Loading Spinner -->
+                <div id="loadingSpinner" class="loading-spinner" style="display: none;">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading announcements...</p>
+                </div>
+
+                <!-- Announcements List -->
+                <div class="announcements-list" id="announcementsList">
+                    <!-- Sample Announcement Card Structure -->
+                    <div class="announcement-card">
+                        <div class="announcement-header">
+                            <div class="announcement-badges">
+                                <span class="priority-badge urgent">Urgent</span>
+                                <span class="course-badge">BSIT</span>
+                                <span class="year-badge">1st Year</span>
+                            </div>
+                            <div class="announcement-actions">
+                                <button class="action-btn edit" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn delete" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <h3 class="announcement-title">Sample Announcement Title</h3>
+                        <div class="announcement-content">
+                            This is a sample announcement content that demonstrates the structure and styling.
+                        </div>
+                        <img src="https://via.placeholder.com/400x200" alt="Announcement image" class="announcement-image">
+                        <div class="announcement-meta">
+                            <div class="meta-left">
+                                <div class="meta-item">
+                                    <i class="fas fa-user"></i>
+                                    <span>Admin User</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>Aug 5, 2024, 10:30 AM</span>
+                                </div>
+                            </div>
+                            <div class="view-count">
+                                <i class="fas fa-eye"></i>
+                                <span>124 views</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- No announcements message -->
+                    <div class="no-announcements" id="noAnnouncementsMessage" style="display: none;">
+                        <i class="fas fa-bullhorn"></i>
+                        <h3>No Announcements Yet</h3>
+                        <p>Click "Add Announcement" to create your first announcement.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Add/Edit Announcement Modal -->
+        <div class="modal-overlay" id="announcementModal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3 id="modalTitle">Add New Announcement</h3>
+                    <button class="modal-close" id="modalCloseBtn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="announcementForm">
+                        <div class="form-group">
+                            <label class="form-label" for="announcementTitle">Title *</label>
+                            <input type="text" class="form-input" id="announcementTitle" required placeholder="Enter announcement title">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="announcementContent">Content *</label>
+                            <textarea class="form-input form-textarea" id="announcementContent" required placeholder="Enter announcement content..." rows="5"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="targetAudience">Target Audience</label>
+                            <select class="form-input form-select" id="targetAudience">
+                                <option value="All Students">All Students</option>
+                                <option value="Registrar">Registrar</option>
+                                <option value="Faculty">Faculty</option>
+                            </select>
+                        </div>
+
+                        <div class="course-year-grid">
+                            <div class="form-group">
+                                <label class="form-label" for="targetCourse">Target Course</label>
+                                <select class="form-input form-select" id="targetCourse">
+                                    <option value="All">All Courses</option>
+                                    <option value="BSIT">BSIT</option>
+                                    <option value="BSCS">BSCS</option>
+                                    <option value="BSIS">BSIS</option>
+                                    <option value="BSBA">BSBA</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="targetYear">Target Year Level</label>
+                                <select class="form-input form-select" id="targetYear">
+                                    <option value="All">All Year Levels</option>
+                                    <option value="1st Year">1st Year</option>
+                                    <option value="2nd Year">2nd Year</option>
+                                    <option value="3rd Year">3rd Year</option>
+                                    <option value="4th Year">4th Year</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Priority Level *</label>
+                            <div class="priority-options">
+                                <div class="priority-option">
+                                    <input type="radio" class="priority-radio" id="priorityGeneral" name="priority" value="general" checked>
+                                    <label class="priority-label general" for="priorityGeneral">General</label>
+                                </div>
+                                <div class="priority-option">
+                                    <input type="radio" class="priority-radio" id="priorityImportant" name="priority" value="important">
+                                    <label class="priority-label important" for="priorityImportant">Important</label>
+                                </div>
+                                <div class="priority-option">
+                                    <input type="radio" class="priority-radio" id="priorityUrgent" name="priority" value="urgent">
+                                    <label class="priority-label urgent" for="priorityUrgent">Urgent</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Attachment (Optional)</label>
+                            <div class="image-upload-area" id="imageUploadContainer">
+                                <div class="upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <div class="upload-text">
+                                    <strong>Click to upload</strong> or drag and drop
+                                </div>
+                                <div class="upload-hint">
+                                    PNG, JPG, GIF up to 5MB
+                                </div>
+                                <input type="file" id="imageInput" name="image" accept="image/*" style="display: none;">
+                            </div>
+                            <div id="imagePreview" class="image-preview" style="display: none;">
+                                <img id="previewImage" alt="Preview">
+                                <button type="button" id="removeImageBtn" class="remove-image-btn">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- ADD this section after the image upload group in the modal -->
+<div class="form-group">
+    <label class="form-label">Document Attachment (Optional)</label>
+    <div class="document-upload-area" id="documentUploadContainer">
+        <div class="upload-icon">
+            <i class="fas fa-file-upload"></i>
+        </div>
+        <div class="upload-text">
+            <strong>Click to upload document</strong> or drag and drop
+        </div>
+        <div class="upload-hint">
+            PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT up to 10MB
+        </div>
+        <input type="file" id="documentInput" name="document" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt" style="display: none;">
+    </div>
+    <div id="documentPreview" class="document-preview" style="display: none;">
+        <div id="documentInfo" class="document-info"></div>
+        <button type="button" id="removeDocumentBtn" class="remove-document-btn">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="saveBtn" form="announcementForm">
+                        <i class="fas fa-save" id="saveIcon"></i>
+                        <span id="saveBtnText">Save Announcement</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success/Error Alert Messages -->
+        <div id="alertContainer" style="position: fixed; top: 20px; right: 20px; z-index: 1001; max-width: 400px;">
+            <!-- Alerts will be dynamically inserted here -->
+        </div>
+    </div>
+            
+            <!-- Students Content -->
+            <div class="content-section" id="students">
+                <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Students Management</h1>
+            <p>View and manage student information, enrollment, and academic records.</p>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>BSIT Students</h3>
+                <div class="number" id="bsitStudents">5</div>
+            </div>
+            <div class="stat-card">
+                <h3>BSCS Students</h3>
+                <div class="number" id="bscsStudents">8</div>
+            </div>
+            <div class="stat-card">
+                <h3>BSIS Students</h3>
+                <div class="number" id="bsisStudents">4</div>
+            </div>
+            <div class="stat-card">
+                <h3>BSBA Students</h3>
+                <div class="number" id="bsbaStudents">7</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Students</h3>
+                <div class="number" id="totalStudents">24</div>
+            </div>
+        </div>
+
+        <!-- Replace the existing controls section with this: -->
+<div class="controls">
+    <div class="controls-row">
+        <div class="search-group">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search students by name, email, or ID...">
+            <select class="filter-select" id="programFilter">
+                <option value="">All Programs</option>
+                <option value="information_technology">BSIT</option>
+                <option value="computer_science">BSCS</option>
+                <option value="information_system">BSIS</option>
+                <option value="business_administration">BSBA</option>
+            </select>
+            <select class="filter-select" id="yearFilter">
+                <option value="">All Years</option>
+                <option value="1st_year">1st Year</option>
+                <option value="2nd_year">2nd Year</option>
+                <option value="3rd_year">3rd Year</option>
+                <option value="4th_year">4th Year</option>
+            </select>
+            <select class="filter-select" id="statusFilter">
+                <option value="">All Status</option>
+                <option value="Complete">Complete</option>
+                <option value="Pending_ID">Pending ID</option>
+                <option value="Incomplete">Incomplete</option>
+            </select>
+        </div>
+        <div class="button-group" style="display: flex; gap: 10px; align-items: center;">
+            <button class="btn btn-primary" id="addStudentBtn">
+                <i class="fas fa-plus"></i> Add New Student
+            </button>
+            
+        </div>
+    </div>
+</div>
+        </div>
+
+        <!-- Students Table -->
+        <div class="table-container">
+            <div class="loading" id="loadingState">
+                <div class="spinner"></div>
+                <p>Loading students...</p>
+            </div>
+            
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H19C20.11 23 21 22.11 21 21V9M19 21H5V3H13V9H19Z"/>
+                </svg>
+                <h3>No Students Found</h3>
+                <p>No students match your current search criteria.</p>
+            </div>
+
+            <table class="table" id="studentsTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Student ID</th>
+                        <th>Profile Status</th>
+                        <th>Student Type</th>
+                        <th>Email</th>
+                        <th>Program</th>
+                        <th>Year Level</th>
+                        <th>Contact</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="studentsTableBody">
+                    <!-- Dynamic content will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination" style="display: none;">
+            <!-- Pagination buttons will be generated here -->
+        </div>
+    </div>
+
+    <!-- Add/Edit Student Modal -->
+    <div class="modal" id="studentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Student</h2>
+                <button class="close-btn" id="closeModalBtn">&times;</button>
+            </div>
+            <!-- DESCRIPTION: Add this enhanced form content inside the studentModal, replacing the existing form-grid sections -->
+<form id="studentForm">
+    <div class="form-grid">
+        <div class="form-group">
+            <label for="firstName">First Name *</label>
+            <input type="text" class="form-control" id="firstName" required>
+        </div>
+        <div class="form-group">
+            <label for="lastName">Last Name *</label>
+            <input type="text" class="form-control" id="lastName" required>
+        </div>
+    </div>
+    
+    <!-- NEW: Student ID and Profile Status Section -->
+    <div class="form-grid">
+        <div class="form-group">
+            <label for="studentIdModal">Student ID *</label>
+            <input type="text" class="form-control" id="studentIdModal" 
+                   placeholder="Enter Student ID (e.g., 0509-1022-2298)" required>
+            <small class="form-text text-muted">
+                Format: XXXX-XXXX-XXXX or "N/A" for pending assignment
+            </small>
+        </div>
+        <div class="form-group">
+            <label for="profileStatus">Profile Status</label>
+            <select class="form-control" id="profileStatus" disabled>
+                <option value="Incomplete">Incomplete</option>
+                <option value="Pending_ID">Pending ID Assignment</option>
+                <option value="Complete">Complete</option>
+            </select>
+            <small class="form-text text-muted">
+                Status updates automatically based on Student ID
+            </small>
+        </div>
+    </div>
+    
+    <div class="form-grid">
+        <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" class="form-control" id="email" required>
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="tel" class="form-control" id="phone">
+        </div>
+    </div>
+    <div class="form-grid">
+        <div class="form-group">
+            <label for="program">Program *</label>
+            <select class="form-control" id="program" required>
+                <option value="">Select Program</option>
+                <option value="information_technology">BSIT</option>
+                <option value="computer_science">BSCS</option>
+                <option value="information_system">BSIS</option>
+                <option value="business_administration">BSBA</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="yearLevel">Year Level *</label>
+            <select class="form-control" id="yearLevel" required>
+                <option value="">Select Year</option>
+                <option value="1st_year">1st Year</option>
+                <option value="2nd_year">2nd Year</option>
+                <option value="3rd_year">3rd Year</option>
+                <option value="4th_year">4th Year</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-grid">
+        <div class="form-group">
+            <label for="dateOfBirth">Date of Birth</label>
+            <input type="date" class="form-control" id="dateOfBirth">
+        </div>
+        <div class="form-group">
+            <label for="address">Address</label>
+            <input type="text" class="form-control" id="address">
+        </div>
+    </div>
+    <div class="form-actions">
+        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="submitBtn">Save Student</button>
+    </div>
+</form>
+        </div>
+    
+
+    
+            </div>
+            
+            
+            <div class="content-section" id="courses">
+             <!-- Course Management Content for Registrar -->
+    <div class="course-management">
+        <!-- Header -->
+        <div class="course-header">
+            <h1>📚 Course Management</h1>
+            <p1>Manage courses, subjects, and academic programs for all students</p1>
+        </div>
+
+        <!-- Registrar Permission Note -->
+        <div class="registrar-note">
+            <span class="note-icon">ℹ️</span>
+            <strong>Registrar Access:</strong> You can view all programs, add/edit subjects, and generate reports. Contact administration to add new programs or delete existing content.
+        </div>
+
+        <div class="course-container">
+            <!-- Programs Panel -->
+            <div class="programs-panel">
+                <h3>
+                    <span>📋</span>
+                    Select Program
+                </h3>
+                <div class="program-cards">
+                    <!-- Programs will be loaded here dynamically -->
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        Loading programs...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Curriculum Panel -->
+            <div class="curriculum-panel">
+                <div class="curriculum-header">
+                    <div class="curriculum-title">
+                        <h3 id="curriculumTitle">
+                            <span>🎓</span>
+                            Select a Program
+                        </h3>
+                        <div class="curriculum-details" id="curriculumDetails">
+                            Choose a program to view curriculum
+                        </div>
+                    </div>
+                    
+                    <div class="curriculum-controls">
+                        <div class="control-group">
+                            <label for="yearSelect">Year Level</label>
+                            <select class="form-select" id="yearSelect">
+                                <option value="1st Year">1st Year</option>
+                                <option value="2nd Year">2nd Year</option>
+                                <option value="3rd Year">3rd Year</option>
+                                <option value="4th Year">4th Year</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="termSelect">Semester</label>
+                            <select class="form-select" id="termSelect">
+                                <option value="1st Term">1st Term</option>
+                                <option value="2nd Term">2nd Term</option>
+                                <option value="3rd Term">3rd Term</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label>Total Units</label>
+                            <div class="units-display" id="totalUnits">0 Units</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons (Modified for Registrar) -->
+                <div class="action-buttons">
+                    <button class="action-btn btn-primary" onclick="openModal('addSubjectModal')">
+                        <span>➕</span> Add Subject
+                    </button>
+                    
+                </div>
+
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <input type="text" class="search-input" id="subjectSearch" placeholder="Search subjects by code or name...">
+                    <span class="search-icon">🔍</span>
+                </div>
+
+                <!-- Subjects Table -->
+                <div class="subjects-table-container">
+                    <table class="subjects-table">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Description</th>
+                                <th>Section</th>
+                                <th>Units</th>
+                                <th>Prerequisites</th>
+                                <th>Schedule</th>
+                                <th>Instructor</th>
+                                <th>Room</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subjectsTableBody">
+                            <tr>
+                                <td colspan="7" class="text-center" style="padding: 40px;">
+                                    <div class="empty-state">
+                                        <div class="empty-icon">📚</div>
+                                        <h4>Select a Program</h4>
+                                        <p>Choose a program from the left panel to view its curriculum</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Subject Modal -->
+    <div id="editSubjectModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto;">
+            <h3 style="margin: 0 0 20px 0; color: #2c3e50;">✏️ Edit Subject</h3>
+            <form id="editSubjectForm">
+                <!-- Hidden fields for context -->
+                <input type="hidden" id="editSubjectId">
+                <input type="hidden" id="editProgramId">
+                <input type="hidden" id="editYearLevel">
+                <input type="hidden" id="editSemester">
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Subject Code *</label>
+                    <input type="text" id="editSubjectCode" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Subject Description *</label>
+                    <input type="text" id="editSubjectDescription" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Units *</label>
+                    <input type="number" id="editSubjectUnits" required min="1" max="6" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Section</label>
+                    <input type="text" id="editSubjectSection" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Prerequisites</label>
+                    <input type="text" id="editSubjectPrereq" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Schedule</label>
+                    <input type="text" id="editSubjectSchedule" placeholder="e.g., MWF 9:00-10:00am" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+                <!-- Add after the schedule field in editSubjectModal -->
+<div style="margin-bottom: 15px;">
+    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Instructor</label>
+    <input type="text" id="editSubjectInstructor" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+</div>
+<div style="margin-bottom: 20px;">
+    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Room</label>
+    <input type="text" id="editSubjectRoom" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+</div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" onclick="closeModal('editSubjectModal')" style="padding: 10px 20px; border: 1px solid #ddd; background: #f8f9fa; border-radius: 6px; cursor: pointer;">Cancel</button>
+                    <button type="button" onclick="updateSubject()" style="padding: 10px 20px; border: none; background: #3498db; color: white; border-radius: 6px; cursor: pointer;">Update Subject</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Subject Modal - ADD THIS TO REGISTRAR HTML -->
+<div id="addSubjectModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto;">
+        <h3 style="margin: 0 0 20px 0; color: #2c3e50;">➕ Add New Subject</h3>
+        <form id="addSubjectForm">
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: 500;">Subject Code *</label>
+                <input type="text" id="subjectCode" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;" placeholder="e.g., IT 101">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: 500;">Subject Description *</label>
+                <input type="text" id="subjectDescription" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;" placeholder="e.g., Introduction to Computing">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: 500;">Units *</label>
+                <input type="number" id="subjectUnits" required min="1" max="6" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;" placeholder="3">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: 500;">Section</label>
+                <input type="text" id="subjectSection" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;" placeholder="e.g., A, B, C">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: 500;">Prerequisites</label>
+                <input type="text" id="subjectPrereq" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;" placeholder="e.g., None, IT 100">
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: 500;">Schedule</label>
+                <input type="text" id="subjectSchedule" placeholder="e.g., MWF 9:00-10:00am" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+            </div>
+            <div style="margin-bottom: 15px;">
+    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Instructor</label>
+    <input type="text" id="subjectInstructor" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;" placeholder="e.g., Prof. John Smith">
+</div>
+<div style="margin-bottom: 20px;">
+    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Room</label>
+    <input type="text" id="subjectRoom" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;" placeholder="e.g., Room 101, Lab A">
+</div>
+
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="button" onclick="closeModal('addSubjectModal')" style="padding: 10px 20px; border: 1px solid #ddd; background: #f8f9fa; border-radius: 6px; cursor: pointer;">Cancel</button>
+                <button type="button" onclick="addSubject()" style="padding: 10px 20px; border: none; background: #28a745; color: white; border-radius: 6px; cursor: pointer;">Add Subject</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+            </div>
+            
+            <!-- Messages Content -->
+            <div class="content-section" id="messages">
+                <div class="chat-container">
+        <!-- Left Sidebar - Contacts -->
+        <div class="contacts-panel">
+            <div class="contacts-header">
+                <h3>Messages</h3>
+                
+            </div>
+            
+            <div class="search-section">
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" placeholder="Search contacts..." oninput="filterContacts(this.value)">
+                </div>
+                <div class="role-filters">
+                    <button class="role-tag active" onclick="filterByRole('all')">All</button>
+                    <button class="role-tag" onclick="filterByRole('student')">Students</button>
+                    <button class="role-tag" onclick="filterByRole('admin')">Admin</button>
+                    <button class="role-tag" onclick="filterByRole('faculty')">Faculty</button>
+                </div>
+            </div>
+            
+            <div class="contacts-list" id="contactsList">
+                <!-- Contacts will be populated here -->
+            </div>
+        </div>
+
+        <!-- Right Panel - Chat -->
+        <div class="chat-panel">
+            <div class="empty-chat" id="emptyChat">
+                <i class="fas fa-comments"></i>
+                <h3>Welcome to Academic Chat</h3>
+                <p>Select a contact from the left panel to start a conversation with Faculty, Administrators, or Students.</p>
+            </div>
+            
+            <div class="chat-header" id="chatHeader" style="display: none;">
+                <button class="mobile-back-btn" onclick="closeMobileChat()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div class="chat-user-info">
+                    <div class="chat-avatar" id="chatAvatar">
+                        JD
+                        <div class="online-indicator"></div>
+                    </div>
+                    <div class="chat-user-details">
+                        <h4 id="chatUserName"></h4>
+                        <p id="chatUserRole"></p>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="chat-messages" id="chatMessages" style="display: none;">
+                <!-- Messages will be populated here -->
+            </div>
+            
+            <div class="chat-input-container" id="chatInputContainer" style="display: none;">
+                <div class="chat-input-wrapper">
+                    <textarea class="chat-input" id="messageInput" placeholder="Type a message..." rows="1" onkeypress="handleKeyPress(event)" oninput="autoResize(this)"></textarea>
+                    <div class="input-actions">
+                        <button class="input-action-btn" onclick="attachFile()">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <button class="input-action-btn send-btn" onclick="sendMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+            </div>
+            
+            
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+       document.addEventListener('DOMContentLoaded', function() {
+    console.log("🎯 Registrar Dashboard loaded - checking authentication...");
+    
+    // Prevent multiple socket initializations
+    if (window.socketInitialized) {
+        console.log('Socket already initialized, skipping dashboard socket setup');
+        return;
+    }
+    window.socketInitialized = true;
+    
+    // Initialize socket handler with delay to prevent conflicts
+    setTimeout(() => {
+        if (window.universalSocketHandler && !window.universalSocketHandler.isConnected) {
+            console.log('Initializing universal socket handler...');
+            window.universalSocketHandler.init();
+        }
+    }, 2000)
+    // MOVE MODAL FUNCTIONS HERE - RIGHT AT THE START
+    // Modal helper functions - MOVE THIS SECTION TO TOP
+    window.openModal = function(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            console.log('✅ Modal opened:', modalId);
+        } else {
+            console.error('❌ Modal not found:', modalId);
+        }
+    };
+
+    window.closeModal = function(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            
+            if (modalId === 'addSubjectModal') {
+                const form = document.getElementById('addSubjectForm');
+                if (form) form.reset();
+            }
+            console.log('✅ Modal closed:', modalId);
+        }
+    };
+
+    // Generate Report function - KEEP THIS HERE TOO
+    window.generateReport = function() {
+        if (!window.courseManagement?.currentProgram) {
+            alert('Please select a program first');
+            return;
+        }
+        
+        const program = window.courseManagement.currentProgram;
+        const reportData = {
+            program: program.name,
+            yearLevel: window.courseManagement.currentYearLevel,
+            semester: window.courseManagement.currentSemester,
+            timestamp: new Date().toLocaleDateString()
+        };
+        
+        alert(`Report Generation:\nProgram: ${reportData.program}\nYear: ${reportData.yearLevel}\nSemester: ${reportData.semester}\n\nReport feature will be implemented soon.`);
+    };
+
+    console.log('✅ Modal and report functions initialized globally');
+
+    // Global wrapper functions for course management - ADD THIS
+window.updateSubject = function() {
+    console.log('🔄 updateSubject called globally');
+    if (window.courseManagement) {
+        return window.courseManagement.updateSubject();
+    } else {
+        console.error('❌ CourseManagement not initialized');
+        alert('Course Management system not ready. Please refresh the page.');
+        return false;
+    }
+};
+
+window.addSubject = function() {
+    console.log('➕ addSubject called globally');
+    if (window.courseManagement) {
+        return window.courseManagement.addSubject();
+    } else {
+        console.error('❌ CourseManagement not initialized');
+        alert('Course Management system not ready. Please refresh the page.');
+        return false;
+    }
+};
+
+window.editSubject = function(subjectId) {
+    console.log('✏️ editSubject called globally for ID:', subjectId);
+    if (window.courseManagement) {
+        return window.courseManagement.editSubject(subjectId);
+    } else {
+        console.error('❌ CourseManagement not initialized');
+        alert('Course Management system not ready. Please refresh the page.');
+        return false;
+    }
+};
+
+window.deleteSubject = function(subjectId) {
+    console.log('🗑️ deleteSubject called globally for ID:', subjectId);
+    if (window.courseManagement) {
+        if (confirm('Are you sure you want to delete this subject?')) {
+            return window.courseManagement.deleteSubject(subjectId);
+        }
+    } else {
+        console.error('❌ CourseManagement not initialized');
+        alert('Course Management system not ready. Please refresh the page.');
+        return false;
+    }
+};
+
+console.log('✅ Global course management wrapper functions initialized');
+    // ===== AUTHENTICATION FUNCTIONS =====
+    
+    // Check if user is authenticated (consistent with login.js)
+    function checkAuthentication() {
+        const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
+        const hasToken = sessionStorage.getItem('authToken') !== null;
+        const hasUser = sessionStorage.getItem('userData') !== null;
+        
+        console.log("🔍 Auth status:", { isAuthenticated, hasToken, hasUser });
+        
+        if (!isAuthenticated || !hasToken || !hasUser) {
+            console.log("❌ Not authenticated, redirecting to login...");
+            // Fixed: Use relative path like in login.js
+            window.location.href = '../login.html';
+            return false;
+        }
+        
+        // Check if user role is registrar
+        const userRole = getUserRole();
+        console.log("🎭 User role:", userRole);
+        
+        if (userRole !== 'registrar') {
+            console.log("❌ Access denied - not a registrar role");
+            alert('Access denied. This dashboard is for registrar accounts only.');
+            window.location.href = '../login.html';
+            return false;
+        }
+        
+        return true;
+    }
+    
+    // Get current user data (consistent with login.js)
+    function getCurrentUser() {
+        try {
+            const userData = sessionStorage.getItem('userData');
+            if (userData) {
+                const user = JSON.parse(userData);
+                console.log("👤 Current user retrieved:", user);
+                return user;
+            }
+            console.log("❌ No user data found");
+            return null;
+        } catch (error) {
+            console.error("❌ Error parsing user data:", error);
+            return null;
+        }
+    }
+    
+    // Get user role (consistent with login.js)
+    function getUserRole() {
+        // Try stored role first
+        const storedRole = sessionStorage.getItem('userRole');
+        if (storedRole) {
+            console.log("🎭 Role from storage:", storedRole);
+            return storedRole;
+        }
+        
+        // Try user data role
+        const userData = sessionStorage.getItem('userData');
+        if (userData) {
+            try {
+                const user = JSON.parse(userData);
+                if (user.role) {
+                    console.log("🎭 Role from user data:", user.role);
+                    return user.role.toLowerCase();
+                }
+            } catch (error) {
+                console.error("Error parsing user data for role:", error);
+            }
+        }
+        
+        console.log("🎭 Default role: student");
+        return 'student';
+    }
+    
+    // Enhanced server request with error handling
+    async function makeServerRequest(url, options = {}) {
+        const token = sessionStorage.getItem('authToken');
+        
+        // Add auth header if token exists
+        const defaultHeaders = {
+            'Content-Type': 'application/json',
+            ...(token && { 'Authorization': `Bearer ${token}` })
+        };
+        
+        const requestOptions = {
+            ...options,
+            headers: {
+                ...defaultHeaders,
+                ...options.headers
+            }
+        };
+        
+        try {
+            const response = await fetch(url, requestOptions);
+            
+            // Handle authentication errors
+            if (response.status === 401) {
+                console.log("🔒 Authentication expired, redirecting to login...");
+                sessionStorage.clear();
+                window.location.href = '../login.html';
+                return null;
+            }
+            
+            return response;
+        } catch (error) {
+            console.error("🚨 Server request failed:", error);
+            
+            // Check if we just logged in - if so, don't show error
+            const justLoggedIn = sessionStorage.getItem('justLoggedIn') === 'true';
+            const skipServerCheck = sessionStorage.getItem('skipInitialServerCheck') === 'true';
+            
+            if (justLoggedIn || skipServerCheck) {
+                console.log("⏭️ Skipping server error - just logged in");
+                return null;
+            }
+            
+            return null;
+        }
+    }
+    
+    // Load dashboard data with fallback
+    async function loadDashboardData() {
+        console.log("📊 Loading registrar dashboard data...");
+        
+        // Clear the login flags first
+        sessionStorage.removeItem('justLoggedIn');
+        sessionStorage.removeItem('skipInitialServerCheck');
+        
+        // Try to load announcements
+        try {
+            const response = await makeServerRequest('http://localhost:3006/api/announcements');
+            if (response && response.ok) {
+                const data = await response.json();
+                console.log("📢 Announcements loaded:", data);
+                // Update announcements UI here
+            }
+        } catch (error) {
+            console.log("⚠️ Failed to load announcements, using offline mode");
+        }
+        
+        console.log("📊 Registrar dashboard data loading complete");
+    }
+    
+    // ===== DASHBOARD INITIALIZATION =====
+    
+    // Initialize dashboard with offline support
+    function initializeDashboard() {
+        console.log("🏁 Initializing registrar dashboard...");
+        
+        if (!checkAuthentication()) {
+            return;
+        }
+        
+        const user = getCurrentUser();
+        if (!user) {
+            console.log("❌ No user data found, redirecting to login...");
+            window.location.href = '../login.html';
+            return;
+        }
+        
+        console.log("👤 Dashboard user:", user);
+        
+        // Get user info for display
+        const userName = user.username || user.name || user.first_name || 'Registrar';
+        const userEmail = user.email || '';
+        const userRole = user.role || 'registrar';
+        
+        console.log("🎭 Display info:", { userName, userEmail, userRole });
+        
+        // Update UI with user info
+        const userNameElements = document.querySelectorAll('[data-user-name]');
+        userNameElements.forEach(el => {
+            el.textContent = userName;
+        });
+        
+        // Set user role
+        const userRoleElements = document.querySelectorAll('[data-user-role]');
+        userRoleElements.forEach(el => {
+            el.textContent = userRole.charAt(0).toUpperCase() + userRole.slice(1);
+        });
+        
+        // Update specific elements if they exist
+        const userNameDisplay = document.getElementById('userNameDisplay');
+        const userRoleDisplay = document.getElementById('userRoleDisplay');
+        const userMenuName = document.getElementById('userMenuName');
+        const userMenuEmail = document.getElementById('userMenuEmail');
+        const welcomeMessage = document.getElementById('welcomeMessage');
+
+        if (userNameDisplay) {
+            userNameDisplay.textContent = userName;
+            console.log("✅ Updated userNameDisplay");
+        }
+        if (userRoleDisplay) {
+            userRoleDisplay.textContent = userRole.charAt(0).toUpperCase() + userRole.slice(1);
+            console.log("✅ Updated userRoleDisplay");
+        }
+        if (userMenuName) {
+            userMenuName.textContent = userName;
+            console.log("✅ Updated userMenuName");
+        }
+        if (userMenuEmail) {
+            userMenuEmail.textContent = userEmail;
+            console.log("✅ Updated userMenuEmail");
+        }
+        if (welcomeMessage) {
+            const firstName = userName.split(' ')[0];
+            welcomeMessage.textContent = `Welcome, ${firstName}!`;
+            console.log("✅ Updated welcomeMessage");
+        }
+        
+        // Load dashboard data with error handling
+        setTimeout(() => {
+            loadDashboardData();
+        }, 500);
+        
+        console.log("✅ Registrar dashboard initialized successfully");
+    }
+
+    
+
+// Close modal when clicking outside - ADD TO REGISTRAR
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('modal')) {
+        const modalId = e.target.id;
+        closeModal(modalId);
+    }
+});
+    
+    // ===== DARK MODE FUNCTIONALITY =====
+    function initializeDarkMode() {
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const htmlElement = document.documentElement;
+        
+        if (!darkModeToggle) {
+            console.log("⚠️ Dark mode toggle not found");
+            return;
+        }
+        
+        // Dark mode toggle event listener
+        darkModeToggle.addEventListener('change', function() {
+            if (this.checked) {
+                htmlElement.setAttribute('data-theme', 'dark');
+                console.log("🌙 Dark mode enabled");
+            } else {
+                htmlElement.removeAttribute('data-theme');
+                console.log("☀️ Light mode enabled");
+            }
+        });
+        
+        console.log("✅ Dark mode initialized");
+    }
+
+    // ===== UI FUNCTIONALITY =====
+    
+    // Sidebar toggle functionality
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    if (sidebarToggle && sidebar) {
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            console.log("📱 Sidebar toggled");
+        });
+        console.log("✅ Sidebar toggle initialized");
+    }
+    
+    // Navigation handling
+    const navItems = document.querySelectorAll('.nav-item');
+    const contentSections = document.querySelectorAll('.content-section');
+    
+    if (navItems.length > 0) {
+        navItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const sectionName = this.getAttribute('data-section');
+                console.log("📍 Navigating to section:", sectionName);
+                
+                // Remove active class from all nav items
+                navItems.forEach(nav => nav.classList.remove('active'));
+                // Add active class to clicked item
+                this.classList.add('active');
+                
+                // Hide all content sections
+                contentSections.forEach(section => section.classList.remove('active'));
+                // Show selected content section
+                const targetSection = document.getElementById(sectionName);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                    console.log("✅ Switched to section:", sectionName);
+                } else {
+                    console.log("⚠️ Target section not found:", sectionName);
+                }
+            });
+        });
+        console.log("✅ Navigation initialized");
+    }
+    
+    // Logout functionality
+    window.logout = function() {
+        console.log("🚪 Logging out...");
+        sessionStorage.clear();
+        window.location.href = '../login.html';
+    };
+
+    // Multiple logout buttons functionality
+    const logoutBtns = [
+        document.getElementById('logoutBtn'),
+        document.getElementById('userMenuLogout')
+    ];
+    
+    logoutBtns.forEach((btn, index) => {
+        if (btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (confirm('Are you sure you want to logout?')) {
+                    console.log(`🚪 Logout triggered from button ${index + 1}`);
+                    sessionStorage.clear();
+                    window.location.href = '../login.html';
+                }
+            });
+            console.log(`✅ Logout button ${index + 1} initialized`);
+        }
+    });
+    
+    
+
+    // Search functionality
+    const searchInput = document.querySelector('.search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            console.log('🔍 Searching for:', searchTerm);
+            // Add your search logic here
+        });
+        console.log("✅ Search functionality initialized");
+    }
+    
+    
+    
+    // ===== INITIALIZE EVERYTHING =====
+    
+    try {
+        console.log("🚀 Starting registrar dashboard initialization...");
+        
+        // Initialize dark mode
+        initializeDarkMode();
+        
+        // Initialize the dashboard
+        initializeDashboard();
+        
+        
+        
+        // Add periodic auth check
+        setInterval(() => {
+            if (!checkAuthentication()) {
+                console.log("🔒 Periodic auth check failed, redirecting...");
+                return;
+            }
+        }, 60000); // Check every minute
+        
+        console.log("✅ Complete registrar dashboard handler loaded successfully");
+        
+    } catch (error) {
+        console.error("🚨 Error during dashboard initialization:", error);
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    // ADD NULL CHECKS
+    const modal = document.getElementById("announcementModal");
+    const addBtn = document.getElementById("addAnnouncementBtn");
+    const closeBtn = document.getElementById("modalCloseBtn");
+    const cancelBtn = document.getElementById("cancelBtn");
+    
+    // Only proceed if elements exist
+    if (modal && addBtn && closeBtn && cancelBtn) {
+        // Open modal
+        addBtn.addEventListener("click", () => {
+            modal.classList.add("active");
+            document.body.classList.add("modal-open");
+        });
+
+        // Close modal
+        [closeBtn, cancelBtn].forEach((btn) =>
+            btn.addEventListener("click", () => {
+                modal.classList.remove("active");
+                document.body.classList.remove("modal-open");
+            })
+        );
+    }
+    
+    const searchInput = document.getElementById('subjectSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            if (window.courseManagement) {
+                window.courseManagement.filterSubjects(e.target.value);
+            }
+        });
+    }
+});
+
+
+
+// Dashboard card click functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click event listeners to dashboard cards
+    const dashboardCards = document.querySelectorAll('.dashboard-card[data-redirect]');
+    
+    dashboardCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const targetSection = this.getAttribute('data-redirect');
+            navigateToSection(targetSection);
+        });
+    });
+    
+    // Function to navigate to specific section
+    function navigateToSection(sectionId) {
+        // Hide all content sections
+        const allSections = document.querySelectorAll('.content-section');
+        allSections.forEach(section => {
+            section.classList.remove('active');
+        });
+        
+        // Show target section
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+            targetSection.classList.add('active');
+        }
+        
+        // Update active nav item
+        const allNavItems = document.querySelectorAll('.nav-item');
+        allNavItems.forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        // Find and activate corresponding nav item
+        const correspondingNavItem = document.querySelector(`.nav-item[data-section="${sectionId}"]`);
+        if (correspondingNavItem) {
+            correspondingNavItem.classList.add('active');
+        }
+    }
+});
+
+  // Notification System Initialization for Dashboard
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize notification bell functionality
+    initializeNotificationBell();
+    
+    // Initialize socket with delay to ensure other scripts load
+    setTimeout(() => {
+        if (window.universalSocketHandler) {
+            window.universalSocketHandler.init();
+        } else {
+            console.log('Universal socket handler not available, initializing basic socket...');
+            initializeBasicSocket();
+        }
+    }, 2000);
+});
+
+function initializeNotificationBell() {
+    const notificationBell = document.getElementById('notificationBell');
+    const notificationDropdown = document.getElementById('notificationDropdown');
+    
+    if (!notificationBell || !notificationDropdown) {
+        console.log('Notification bell or dropdown not found in this dashboard');
+        return;
+    }
+    
+    // Bell click handler
+    notificationBell.addEventListener('click', function(e) {
+        e.stopPropagation();
+        
+        // Toggle dropdown visibility
+        if (notificationDropdown.style.display === 'block') {
+            notificationDropdown.style.display = 'none';
+        } else {
+            notificationDropdown.style.display = 'block';
+            loadNotifications();
+        }
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!notificationBell.contains(e.target) && !notificationDropdown.contains(e.target)) {
+            notificationDropdown.style.display = 'none';
+        }
+    });
+}
+
+// Add this JavaScript to toggle button visibility
+function toggleNAFilterButtons(showingNA) {
+    const naBtn = document.getElementById('naFilterBtn');
+    const clearBtn = document.getElementById('clearNAFilterBtn');
+    
+    if (naBtn) naBtn.style.display = showingNA ? 'none' : 'flex';
+    if (clearBtn) clearBtn.style.display = showingNA ? 'flex' : 'none';
+}
+
+// Update the loadNAStudents method to include button toggle
+window.studentsManager.originalLoadNAStudents = window.studentsManager.loadNAStudents;
+window.studentsManager.loadNAStudents = function() {
+    toggleNAFilterButtons(true);
+    return this.originalLoadNAStudents();
+};
+
+// Update the clearNAFilter method to include button toggle  
+window.studentsManager.originalClearNAFilter = window.studentsManager.clearNAFilter;
+window.studentsManager.clearNAFilter = function() {
+    toggleNAFilterButtons(false);
+    return this.originalClearNAFilter();
+};
+</script>
+    <script src="../authCheck.js" defer></script>
+    <script src="../chat.js" defer></script>
+    <script src="registrardashboard.js" defer></script>
+    <script src="../studentinfo.js"></script>
+    <script src="../AdminSide/courseManagement.js"></script>
+    <script src="../announcements.js"></script>
+    <script src="enrollment-requests.js"></script>
+    <script src="../socket-handler.js" defer></script>
+    
+    
+</body>
+</html>

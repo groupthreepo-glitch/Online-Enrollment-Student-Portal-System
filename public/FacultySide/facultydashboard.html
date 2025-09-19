@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="facultydashboard.css">
+    <link rel="stylesheet" href="../notifications.css">
+</head>
+<style>
+/* Notification Badge Styles */
+.notification-badge {
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 11px;
+    font-weight: bold;
+    min-width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
+}
+
+.notification-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.notification-bell {
+    position: relative;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.notification-bell:hover {
+    background-color: rgba(0,0,0,0.1);
+}
+
+.notification-bell.has-notifications {
+    color: #ffc107;
+}
+
+/* Bell shake animation */
+@keyframes bellShake {
+    0%, 50%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+}
+
+/* Pulse animation for badges */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.notification-badge:not(:empty) {
+    animation: pulse 2s infinite;
+}
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 2000;
+}
+
+.toast-notification {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    margin-bottom: 10px;
+    padding: 0;
+    border-left: 4px solid #2ecc71;
+    animation: slideInRight 0.3s ease-out;
+    max-width: 350px;
+    cursor: pointer;
+}
+
+.toast-notification.message {
+    border-left-color: #3498db;
+}
+
+.notification-badge {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+</style>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <!-- User Profile Section -->
+            <div class="user-profile">
+                <div class="avatar" id="avatarContainer">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <div class="user-info">
+                    <h3 id="userName"></h3>
+                    <div class="user-role">Faculty</div>
+                </div>
+            </div>
+            
+            <!-- Navigation Menu -->
+            <div class="menu-label">Navigation</div>
+            <ul class="nav-menu">
+                <li class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span class="nav-text">Dashboard</span>
+                </li>
+                <li class="nav-item" data-section="announcements">
+                    <i class="fas fa-bullhorn"></i>
+                    <span class="nav-text">Announcements</span>
+                </li>
+
+                <li class="nav-item" data-section="students">
+                    <i class="fas fa-user-graduate"></i>
+                    <span class="nav-text">Students</span>
+                </li>
+                <li class="nav-item" data-section="grading">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span class="nav-text">Grading</span>
+                    
+                </li>
+                <li class="nav-item" data-section="messages">
+                    <i class="fas fa-envelope"></i>
+                    <span class="nav-text">Messages</span>
+                </li>
+            </ul>
+            
+            
+            
+            <!-- Sidebar Footer -->
+            <div class="sidebar-footer">
+                <div class="mode-toggle">
+                    <label for="darkModeToggle">Dark Mode</label>
+                    <div class="switch">
+                        <input type="checkbox" id="darkModeToggle">
+                        <span class="slider"></span>
+                    </div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="logout-text">Logout</span>
+                </button>
+            </div>
+        </nav>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+<header class="enhanced-header">
+    <div class="header-left">
+        <!-- Logo and college info grouped together at the top -->
+        <div class="college-branding">
+            <img src="/Images/gardner logo.png" alt="Gardner College Logo" class="college-logo">
+            <div class="college-info">
+                <h1 class="college-name">Gardner College Cainta</h1>
+                <p class="portal-type">Faculty Portal</p>
+            </div>
+        </div>
+        <div class="header-right"></div>
+            <div class="welcome-section">
+                <div class="welcome-message">Welcome, <span id="welcomeUserName"></span></div>
+            </div>
+        </div>
+    <!-- Notification bell moved to the right side of the header -->
+    <div class="notification-bell-container">
+        <div class="notification-bell" id="notificationBell">
+            <i class="fas fa-bell"></i>
+            
+        </div>
+        
+        <!-- Notification Dropdown -->
+        <div class="notification-dropdown" id="notificationDropdown">
+            <div class="notification-header">
+                <h3>Notifications</h3>
+                <a href="#" class="clear-all" id="clearAllBtn">Mark All as Read</a>
+            </div>
+            <div class="notification-list" id="notificationList">
+                <div class="no-notifications">
+                    <i class="fas fa-bell-slash"></i>
+                    <p>No new notifications</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+            
+            <!-- Dashboard Content -->
+<div class="content-section active" id="dashboard">
+    <div class="dashboard-grid">
+        <div class="dashboard-card" data-section="announcements">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <div class="card-icon red">
+                        <i class="fas fa-bullhorn"></i>
+                        <span id="announcement-notification-badge" class="notification-badge">0</span>
+                    </div>
+                    Manage Announcements
+                </h3>
+                <div class="card-options">
+                    <i class="fas fa-ellipsis-v"></i>
+                </div>
+            </div>
+            <div class="card-content">
+                <p>Create, edit, and manage announcements for students. Post important updates and notifications across all programs.</p>
+            </div>
+            <a href="#" class="card-action">
+                Manage Posts <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        
+        <div class="dashboard-card" data-section="students">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <div class="card-icon blue">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    Enrolled Students
+                </h3>
+                <div class="card-options">
+                    <i class="fas fa-ellipsis-v"></i>
+                </div>
+            </div>
+            <div class="card-content">
+                <p>View and manage all enrolled students. Access student details, enrollment status, and academic information.</p>
+            </div>
+            <a href="#" class="card-action">
+                View Students <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        
+        <div class="dashboard-card" data-section="grading">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <div class="card-icon green">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    Student Grading
+                </h3>
+                <div class="card-options">
+                    <i class="fas fa-ellipsis-v"></i>
+                </div>
+            </div>
+            <div class="card-content">
+                <p>Manage student grades and assessments. Input, update, and track academic performance across all subjects.</p>
+            </div>
+            <a href="#" class="card-action">
+                Grade Students <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        
+        <div class="dashboard-card" data-section="messages">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <div class="card-icon teal">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    Academic Messages
+                </h3>
+                <div class="card-options">
+                    <i class="fas fa-ellipsis-v"></i>
+                </div>
+            </div>
+            <div class="card-content">
+                <p>Communicate with students, administrators, and registrar. Monitor important academic discussions and updates.</p>
+            </div>
+            <a href="#" class="card-action">
+                View Messages <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+            
+            <!-- Enhanced Announcements Content -->
+    <div class="content-section" id="announcements">
+        <div class="announcements-container">
+            <!-- Header -->
+            <div class="announcements-header">
+                <div class="header-left">
+                    <i class="fas fa-bullhorn"></i>
+                    <div>
+                        <h2>Announcements</h2>
+                        <div class="announcement-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-list"></i>
+                                <span id="totalCount">0 Total</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span id="urgentCount">0 Urgent</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="add-announcement-btn" id="addAnnouncementBtn">
+                    <i class="fas fa-plus"></i>
+                    Add Announcement
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="announcements-content">
+                <!-- Filters -->
+                <div class="announcements-filters">
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="urgent">Urgent</button>
+                        <button class="filter-btn" data-filter="important">Important</button>
+                        <button class="filter-btn" data-filter="general">General</button>
+                    </div>
+                    <div class="search-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="search-input" placeholder="Search announcements..." id="announcementSearchInput">
+                    </div>
+                </div>
+
+                <!-- Course Filters -->
+                <div class="course-filters">
+                    <button class="course-btn active" data-course="all">All Courses</button>
+                    <button class="course-btn" data-course="BSIT">BSIT</button>
+                    <button class="course-btn" data-course="BSCS">BSCS</button>
+                    <button class="course-btn" data-course="BSIS">BSIS</button>
+                    <button class="course-btn" data-course="BSBA">BSBA</button>
+                </div>
+
+                <div class="year-filters">
+                    <button class="year-btn active" data-year="all">All Years</button>
+                    <button class="year-btn" data-year="1st-year">1st Year</button>
+                    <button class="year-btn" data-year="2nd-year">2nd Year</button>
+                    <button class="year-btn" data-year="3rd-year">3rd Year</button>
+                    <button class="year-btn" data-year="4th-year">4th Year</button>
+                </div>
+
+                <!-- Loading Spinner -->
+                <div id="loadingSpinner" class="loading-spinner" style="display: none;">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading announcements...</p>
+                </div>
+
+                <!-- Announcements List -->
+                <div class="announcements-list" id="announcementsList">
+                    <!-- Sample Announcement Card Structure -->
+                    <div class="announcement-card">
+                        <div class="announcement-header">
+                            <div class="announcement-badges">
+                                <span class="priority-badge urgent">Urgent</span>
+                                <span class="course-badge">BSIT</span>
+                                <span class="year-badge">1st Year</span>
+                            </div>
+                            <div class="announcement-actions">
+                                <button class="action-btn edit" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn delete" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <h3 class="announcement-title">Sample Announcement Title</h3>
+                        <div class="announcement-content">
+                            This is a sample announcement content that demonstrates the structure and styling.
+                        </div>
+                        <img src="https://via.placeholder.com/400x200" alt="Announcement image" class="announcement-image">
+                        <div class="announcement-meta">
+                            <div class="meta-left">
+                                <div class="meta-item">
+                                    <i class="fas fa-user"></i>
+                                    <span>Admin User</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>Aug 5, 2024, 10:30 AM</span>
+                                </div>
+                            </div>
+                            <div class="view-count">
+                                <i class="fas fa-eye"></i>
+                                <span>124 views</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- No announcements message -->
+                    <div class="no-announcements" id="noAnnouncementsMessage" style="display: none;">
+                        <i class="fas fa-bullhorn"></i>
+                        <h3>No Announcements Yet</h3>
+                        <p>Click "Add Announcement" to create your first announcement.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Add/Edit Announcement Modal -->
+        <div class="modal-overlay" id="announcementModal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3 id="modalTitle">Add New Announcement</h3>
+                    <button class="modal-close" id="modalCloseBtn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="announcementForm">
+                        <div class="form-group">
+                            <label class="form-label" for="announcementTitle">Title *</label>
+                            <input type="text" class="form-input" id="announcementTitle" required placeholder="Enter announcement title">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="announcementContent">Content *</label>
+                            <textarea class="form-input form-textarea" id="announcementContent" required placeholder="Enter announcement content..." rows="5"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="targetAudience">Target Audience</label>
+                            <select class="form-input form-select" id="targetAudience">
+                                <option value="All Students">All Students</option>
+                                <option value="Registrar">Registrar</option>
+                                <option value="Faculty">Faculty</option>
+                            </select>
+                        </div>
+
+                        <div class="course-year-grid">
+                            <div class="form-group">
+                                <label class="form-label" for="targetCourse">Target Course</label>
+                                <select class="form-input form-select" id="targetCourse">
+                                    <option value="All">All Courses</option>
+                                    <option value="BSIT">BSIT</option>
+                                    <option value="BSCS">BSCS</option>
+                                    <option value="BSIS">BSIS</option>
+                                    <option value="BSBA">BSBA</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="targetYear">Target Year Level</label>
+                                <select class="form-input form-select" id="targetYear">
+                                    <option value="All">All Year Levels</option>
+                                    <option value="1st Year">1st Year</option>
+                                    <option value="2nd Year">2nd Year</option>
+                                    <option value="3rd Year">3rd Year</option>
+                                    <option value="4th Year">4th Year</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Priority Level *</label>
+                            <div class="priority-options">
+                                <div class="priority-option">
+                                    <input type="radio" class="priority-radio" id="priorityGeneral" name="priority" value="general" checked>
+                                    <label class="priority-label general" for="priorityGeneral">General</label>
+                                </div>
+                                <div class="priority-option">
+                                    <input type="radio" class="priority-radio" id="priorityImportant" name="priority" value="important">
+                                    <label class="priority-label important" for="priorityImportant">Important</label>
+                                </div>
+                                <div class="priority-option">
+                                    <input type="radio" class="priority-radio" id="priorityUrgent" name="priority" value="urgent">
+                                    <label class="priority-label urgent" for="priorityUrgent">Urgent</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Attachment (Optional)</label>
+                            <div class="image-upload-area" id="imageUploadContainer">
+                                <div class="upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <div class="upload-text">
+                                    <strong>Click to upload</strong> or drag and drop
+                                </div>
+                                <div class="upload-hint">
+                                    PNG, JPG, GIF up to 5MB
+                                </div>
+                                <input type="file" id="imageInput" name="image" accept="image/*" style="display: none;">
+                            </div>
+                            <div id="imagePreview" class="image-preview" style="display: none;">
+                                <img id="previewImage" alt="Preview">
+                                <button type="button" id="removeImageBtn" class="remove-image-btn">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- ADD this section after the image upload group in the modal -->
+<div class="form-group">
+    <label class="form-label">Document Attachment (Optional)</label>
+    <div class="document-upload-area" id="documentUploadContainer">
+        <div class="upload-icon">
+            <i class="fas fa-file-upload"></i>
+        </div>
+        <div class="upload-text">
+            <strong>Click to upload document</strong> or drag and drop
+        </div>
+        <div class="upload-hint">
+            PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT up to 10MB
+        </div>
+        <input type="file" id="documentInput" name="document" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt" style="display: none;">
+    </div>
+    <div id="documentPreview" class="document-preview" style="display: none;">
+        <div id="documentInfo" class="document-info"></div>
+        <button type="button" id="removeDocumentBtn" class="remove-document-btn">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="saveBtn" form="announcementForm">
+                        <i class="fas fa-save" id="saveIcon"></i>
+                        <span id="saveBtnText">Save Announcement</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success/Error Alert Messages -->
+        <div id="alertContainer" style="position: fixed; top: 20px; right: 20px; z-index: 1001; max-width: 400px;">
+            <!-- Alerts will be dynamically inserted here -->
+        </div>
+    </div>
+            
+            <!-- Faculty Students Content -->
+    <div class="content-section" id="students">
+        <div class="faculty-students-container">
+            <!-- Enhanced Faculty Header -->
+            <div class="faculty-header">
+                <h2 class="faculty-title">
+                    <span class="faculty-highlight">Enrolled Students</span>
+                </h2>
+                <div class="faculty-badge">Faculty Access</div>
+            </div>
+
+            <!-- Enhanced Faculty Stats Dashboard -->
+            <div class="faculty-stats">
+                <div class="faculty-stat-card">
+                    <div class="faculty-stat-number" id="totalStudents">0</div>
+                    <div class="faculty-stat-label">Total Students</div>
+                </div>
+                <div class="faculty-stat-card">
+                    <div class="faculty-stat-number" id="activeStudents">0</div>
+                    <div class="faculty-stat-label">Active This Semester</div>
+                </div>
+                <div class="faculty-stat-card">
+                    <div class="faculty-stat-number" id="newEnrollees">0</div>
+                    <div class="faculty-stat-label">New Enrollees</div>
+                </div>
+                
+            </div>
+
+            <!-- REPLACE your existing faculty-controls section with this enhanced version -->
+<div class="faculty-controls">
+    <div class="faculty-search-group">
+        <div class="search-input-wrapper">
+            <input type="text" 
+                   class="faculty-search" 
+                   id="studentSearch" 
+                   placeholder="Search by name, student ID, email, or course..."
+                   oninput="if(window.facultyEnrolledStudents) window.facultyEnrolledStudents.triggerSearch()"
+                   onkeyup="if(window.facultyEnrolledStudents) window.facultyEnrolledStudents.triggerSearch()">
+            <span class="search-icon">🔍</span>
+        </div>
+        
+        <select class="faculty-filter" 
+                id="programFilter"
+                onchange="if(window.facultyEnrolledStudents) window.facultyEnrolledStudents.triggerProgramFilter()">
+            <option value="">All Programs</option>
+            <option value="BSIT">BSIT</option>
+            <option value="BSCS">BSCS</option>
+            <option value="BSIS">BSIS</option>
+            <option value="BSBA">BSBA</option>
+        </select>
+        
+        <select class="faculty-filter" 
+                id="yearFilter"
+                onchange="if(window.facultyEnrolledStudents) window.facultyEnrolledStudents.triggerYearFilter()">
+            <option value="">All Year Levels</option>
+            <option value="1st Year">1st Year</option>
+            <option value="2nd Year">2nd Year</option>
+            <option value="3rd Year">3rd Year</option>
+            <option value="4th Year">4th Year</option>
+        </select>
+    </div>
+    
+    <!-- REPLACE your existing export button with this enhanced version -->
+<button class="faculty-action-btn" 
+        id="exportStudents"
+        onclick="if(window.facultyEnrolledStudents) window.facultyEnrolledStudents.triggerExport()">
+    📊 Export Options
+</button>
+</div>
+
+            <!-- Enhanced Migration Controls - Faculty Exclusive Feature -->
+            <div class="migration-controls">
+                <h4>🎓 Database Migration Center</h4>
+                <p>Migrate approved enrollment requests to enrolled students table. This is a faculty-only administrative function.</p>
+                <button id="migrateApprovedBtn" class="btn btn-primary">
+                    🔄 Migrate Approved Requests
+                </button>
+                
+                <div id="migrationResult" style="margin-top: 15px;"></div>
+            </div>
+
+            <!-- Enhanced Students Table Container -->
+            <div class="faculty-students-table-container">
+                <!-- Enhanced Table Header with Sorting -->
+<div class="faculty-table-header">
+    <div>#</div>
+    <div data-sort="student_name" style="cursor: pointer;" onclick="facultyEnrolledStudents.sortStudents('student_name')">Student Details</div>
+    <div data-sort="student_id" style="cursor: pointer;" onclick="facultyEnrolledStudents.sortStudents('student_id')">Student ID</div>
+    <div data-sort="student_email" style="cursor: pointer;" onclick="facultyEnrolledStudents.sortStudents('student_email')">Email Address</div>
+    <div data-sort="program" style="cursor: pointer;" onclick="facultyEnrolledStudents.sortStudents('program')">Program</div>
+    <div data-sort="year_level" style="cursor: pointer;" onclick="facultyEnrolledStudents.sortStudents('year_level')">Year Level</div>
+    <div>Contact</div>
+    <div data-sort="enrollment_status" style="cursor: pointer;" onclick="facultyEnrolledStudents.sortStudents('enrollment_status')">Status</div>
+</div>
+
+                <!-- Students List -->
+                <div class="faculty-students-list" id="facultyStudentsList">
+                    <!-- Loading State -->
+                    <div class="faculty-loading" id="loadingState">
+                        <div class="faculty-loading-spinner"></div>
+                        <div style="font-size: 16px; font-weight: 600;">Loading enrolled students...</div>
+                        <div style="font-size: 14px; margin-top: 8px; opacity: 0.7;">Please wait while we fetch your student data</div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div class="faculty-empty-state" id="emptyState" style="display: none;">
+                        <div class="faculty-empty-icon">👨‍🎓</div>
+                        <div class="faculty-empty-title">No Students Found</div>
+                        <div class="faculty-empty-subtitle">
+                            You don't have any enrolled students yet, or they don't match your current search criteria.
+                            <br><br>
+                            <em>Try adjusting your filters or check back later for new enrollments.</em>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Student Details Modal -->
+<div class="student-modal-overlay" id="studentModalOverlay" style="display: none;">
+    <div class="student-modal">
+        <div class="student-modal-header">
+            <h3>Student Details & Enrolled Subjects</h3>
+            <button class="student-modal-close" id="closeStudentModal" type="button" onclick="facultyEnrolledStudents.closeModal()">&times;</button>
+        </div>
+        <div class="student-modal-body">
+            <!-- Student Info Section -->
+            <div class="student-info-section">
+                <div class="student-avatar">
+                    <span id="studentInitials">ST</span>
+                </div>
+                <div class="student-basic-info">
+                    <h4 id="modalStudentName">Loading...</h4>
+                    <p id="modalStudentId">Student ID: -</p>
+                    <p id="modalStudentEmail">Email: -</p>
+                    <div class="student-badges">
+                        <span class="student-program-badge" id="modalStudentProgram">-</span>
+                        <span class="student-year-badge" id="modalStudentYear">-</span>
+                        <span class="student-type-badge" id="modalStudentType">-</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Replace the subjects section with this TABLE FORMAT: -->
+<div class="subjects-section">
+    <h4>📚 Enrolled Subjects</h4>
+    
+    <!-- SUBJECTS TABLE - Like Registrar Dashboard -->
+    <div class="subjects-table-container">
+        <table class="subjects-table" id="modalSubjectsTable">
+            <thead>
+                <tr>
+                    <th>Subject Code</th>
+                    <th>Description</th>
+                    <th>Section</th>
+                    <th>Units</th>
+                    <th>Prerequisite</th>
+                    <th>Schedule</th>
+                </tr>
+            </thead>
+            <tbody id="modalSubjectsList">
+                <tr class="loading-subjects">
+                    <td colspan="6">Loading subjects...</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr class="subjects-total-row">
+                    <td colspan="3"><strong>TOTAL:</strong></td>
+                    <td><strong id="totalUnits">0</strong> units enrolled</td>
+                    <td colspan="2"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    
+    <div class="subjects-summary">
+        <div class="summary-item">
+            <span class="summary-label">Total Subjects:</span>
+            <span class="summary-value" id="totalSubjects">0</span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">Total Units:</span>
+            <span class="summary-value" id="totalUnits2">0</span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">Total Fees:</span>
+            <span class="summary-value" id="modalTotalFees">₱0.00</span>
+        </div>
+    </div>
+</div>
+        </div>
+    </div>
+</div>
+    </div>
+            
+            <!-- Grading Content -->
+            <div class="content-section" id="grading">
+                <div class="grading-container">
+        <!-- Header -->
+        <div class="grading-header">
+            <h1>📚 Student Grading System</h1>
+            <p1>Manage and input grades for enrolled students across all programs</p1>
+        </div>
+
+        <!-- Stats Cards - FIXED: Changed IDs to be unique for grading section -->
+<div class="stats-cards">
+    <div class="stat-card">
+        <div class="stat-number" id="gradingTotalStudents">0</div>
+        <div class="stat-label">Total Students</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="gradingTotalPrograms">0</div>
+        <div class="stat-label">Programs</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="gradingActiveClasses">0</div>
+        <div class="stat-label">Active Classes</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="gradingPendingGrades">0</div>
+        <div class="stat-label">Pending Grades</div>
+    </div>
+</div>
+
+        <!-- REPLACE the entire filters-section div with this FIXED version -->
+<div class="filters-section">
+    <div class="filters-row">
+        <div class="filter-group">
+            <label for="gradingProgramFilter">Program</label>
+            <select id="gradingProgramFilter" class="filter-input">
+                <option value="">All Programs</option>
+                <option value="BSIT">BSIT</option>
+                <option value="BSCS">BSCS</option>
+                <option value="BSIS">BSIS</option>
+                <option value="BSBA">BSBA</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="gradingYearLevelFilter">Year Level</label>
+            <select id="gradingYearLevelFilter" class="filter-input">
+                <option value="">All Year Levels</option>
+                <option value="1st Year">1st Year</option>
+                <option value="2nd Year">2nd Year</option>
+                <option value="3rd Year">3rd Year</option>
+                <option value="4th Year">4th Year</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="gradingSemesterFilter">Semester</label>
+            <select id="gradingSemesterFilter" class="filter-input">
+                <option value="">All Semesters</option>
+                <option value="1st Term">1st Term</option>
+                <option value="2nd Term">2nd Term</option>
+                <option value="3rd Term">3rd Term</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="gradingSearchFilter">Search Student</label>
+            <input type="text" id="gradingSearchFilter" class="filter-input" placeholder="Search by name, student ID, or email...">
+        </div>
+        <button class="filter-btn" onclick="loadStudentsForGrading()">🔍 Apply Filters</button>
+    </div>
+</div>
+
+        <!-- Students Table -->
+        <div class="students-section">
+            <div class="section-header">
+                <span id="studentsCount">0</span> Students Found
+            </div>
+            <div id="studentsTableContainer">
+                <div class="loading">
+                    <p>Loading students...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grading Modal -->
+    <div class="modal-overlay" id="gradingModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 id="modalStudentName">Student Grading</h2>
+                <div class="student-info" id="modalStudentInfo"></div>
+                <button class="modal-close" onclick="closeGradingModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamic content will be loaded here -->
+            </div>
+            <div class="modal-actions">
+                <div class="changes-info">
+                    <span id="changesText">No changes made</span>
+                </div>
+                <div>
+                    <button class="modal-btn btn-cancel" onclick="closeGradingModal()">Cancel</button>
+                    <button class="modal-btn btn-save" id="saveGradesBtn" onclick="saveGrades()" disabled>Save Grades</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+            </div>
+            
+            <!-- Messages Content -->
+            <div class="content-section" id="messages">
+                <div class="chat-container">
+        <!-- Left Sidebar - Contacts -->
+        <div class="contacts-panel">
+            <div class="contacts-header">
+                <h3>Messages</h3>
+                
+            </div>
+            
+            <div class="search-section">
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" placeholder="Search contacts..." oninput="filterContacts(this.value)">
+                </div>
+                <div class="role-filters">
+                    <button class="role-tag active" onclick="filterByRole('all')">All</button>
+                    <button class="role-tag" onclick="filterByRole('student')">Students</button>
+                    <button class="role-tag" onclick="filterByRole('admin')">Admin</button>
+                    <button class="role-tag" onclick="filterByRole('registrar')">Registrar</button>
+                </div>
+            </div>
+            
+            <div class="contacts-list" id="contactsList">
+                <!-- Contacts will be populated here -->
+            </div>
+        </div>
+
+        <!-- Right Panel - Chat -->
+        <div class="chat-panel">
+            <div class="empty-chat" id="emptyChat">
+                <i class="fas fa-comments"></i>
+                <h3>Welcome to Academic Chat</h3>
+                <p>Select a contact from the left panel to start a conversation with Registrar, Administrators, or Students.</p>
+            </div>
+            
+            <div class="chat-header" id="chatHeader" style="display: none;">
+                <button class="mobile-back-btn" onclick="closeMobileChat()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div class="chat-user-info">
+                    <div class="chat-avatar" id="chatAvatar">
+                        
+                        <div class="online-indicator"></div>
+                    </div>
+                    <div class="chat-user-details">
+                        <h4 id="chatUserName"></h4>
+                        <p id="chatUserRole"></p>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="chat-messages" id="chatMessages" style="display: none;">
+                <!-- Messages will be populated here -->
+            </div>
+            
+            <div class="chat-input-container" id="chatInputContainer" style="display: none;">
+                <div class="chat-input-wrapper">
+                    <textarea class="chat-input" id="messageInput" placeholder="Type a message..." rows="1" onkeypress="handleKeyPress(event)" oninput="autoResize(this)"></textarea>
+                    <div class="input-actions">
+                        <button class="input-action-btn" onclick="attachFile()">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <button class="input-action-btn send-btn" onclick="sendMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Chat Modal -->
+    <div id="newChatModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Start New Conversation</h3>
+                <button class="close" onclick="closeNewChatModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="gmail-search" id="gmailSearch" placeholder="Search by Gmail address..." oninput="searchGmail(this.value)">
+                <div class="search-results" id="searchResults">
+                    <div class="no-results">Start typing to search for users...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+            </div>
+            
+            
+        </main>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // Basic JavaScript structure for functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sidebar toggle
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('collapsed');
+            });
+            
+            // Navigation handling
+            const navItems = document.querySelectorAll('.nav-item');
+            const contentSections = document.querySelectorAll('.content-section');
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const sectionName = this.getAttribute('data-section');
+                    
+                    // Remove active class from all nav items
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                    
+                    // Hide all content sections
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    // Show selected content section
+                    const targetSection = document.getElementById(sectionName);
+                    if (targetSection) {
+                        targetSection.classList.add('active');
+                    }
+                });
+            });
+            
+            // Dark mode toggle
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            darkModeToggle.addEventListener('change', function() {
+                document.body.classList.toggle('dark-mode');
+            });
+            
+            // Logout functionality
+    window.logout = function() {
+        console.log("🚪 Logging out...");
+        sessionStorage.clear();
+        window.location.href = '../login.html';
+    };
+
+    // Multiple logout buttons functionality
+    const logoutBtns = [
+        document.getElementById('logoutBtn'),
+        document.getElementById('userMenuLogout')
+    ];
+    
+    logoutBtns.forEach((btn, index) => {
+        if (btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (confirm('Are you sure you want to logout?')) {
+                    console.log(`🚪 Logout triggered from button ${index + 1}`);
+                    sessionStorage.clear();
+                    window.location.href = '../login.html';
+                }
+            });
+            console.log(`✅ Logout button ${index + 1} initialized`);
+        }
+    });
+            
+            // Notification icon
+            const notificationIcon = document.getElementById('notificationIcon');
+            notificationIcon.addEventListener('click', function() {
+                // Add notification panel functionality here
+                console.log('Notifications clicked');
+            });
+        });
+        
+        
+// Dashboard card click functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle dashboard card clicks
+    const dashboardCards = document.querySelectorAll('.dashboard-card[data-section]');
+    
+    dashboardCards.forEach(card => {
+        card.addEventListener('click', function(e) {
+            // Prevent default action if clicking on the card action link
+            if (e.target.closest('.card-action')) {
+                e.preventDefault();
+            }
+            
+            const targetSection = this.getAttribute('data-section');
+            
+            // Add click effect
+            this.style.transform = 'translateY(-3px) scale(0.98)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
+            
+            // Switch to the target section
+            if (targetSection) {
+                switchToSection(targetSection);
+            }
+        });
+    });
+    
+    // Function to switch sections (works with your existing navigation)
+    function switchToSection(sectionName) {
+        // Hide all content sections
+        const contentSections = document.querySelectorAll('.content-section');
+        contentSections.forEach(section => {
+            section.classList.remove('active');
+        });
+        
+        // Show target section
+        const targetSection = document.getElementById(sectionName);
+        if (targetSection) {
+            targetSection.classList.add('active');
+        }
+        
+        // Update navigation active state
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        const targetNavItem = document.querySelector(`.nav-item[data-section="${sectionName}"]`);
+        if (targetNavItem) {
+            targetNavItem.classList.add('active');
+        }
+        
+        // Optional: Add some visual feedback
+        console.log(`Switched to ${sectionName} section`);
+    }
+});
+
+
+
+    </script>
+    <!-- REPLACE the existing script tags at the bottom with this order: -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="../authCheck.js"></script>
+    <script src="../socket-handler.js"></script>
+    <script src="../chat.js"></script>
+    <script src="../announcements.js"></script>
+    <script src="enrolled-students.js"></script>
+    <script src="faculty-grading.js"></script>
+    <script src="facultydashboard.js"></script>
+</body>
+</html>

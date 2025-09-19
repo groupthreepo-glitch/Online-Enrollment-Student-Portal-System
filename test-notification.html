@@ -1,0 +1,1580 @@
+Try AI directly in your favorite apps … Use Gemini to generate drafts and refine content, plus get Gemini Pro with access to Google's next-gen AI for ₱1,100.00 ₱0 for 1 month
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - School Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="admindashboard.css">
+    <!-- ADD THIS IN THE <head> SECTION OF ALL HTML FILES -->
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<style>
+/* Notification Badge Styles */
+.notification-badge {
+    background: #dc3545;
+    margin-left: 50px;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 11px;
+    font-weight: bold;
+    min-width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
+}
+
+.fas fa-bell{
+    width: 10px;
+    height: 10px;
+}
+
+.notification-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.notification-bell {
+    position: relative;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.notification-bell:hover {
+    background-color: rgba(0,0,0,0.1);
+}
+
+.notification-bell.has-notifications {
+    color: #ffc107;
+}
+
+/* Bell shake animation */
+@keyframes bellShake {
+    0%, 50%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+}
+
+/* Pulse animation for badges */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.notification-badge:not(:empty) {
+    animation: pulse 2s infinite;
+}
+</style>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <!-- User Profile Section -->
+            <div class="user-profile">
+                <div class="avatar" id="avatarContainer">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="user-info">
+                    <h3 id="userName"></h3>
+                    <div class="user-role">Administrator</div>
+                </div>
+            </div>
+            
+            <!-- Navigation Menu -->
+            <div class="menu-label">Navigation</div>
+            <ul class="nav-menu">
+                <li class="nav-item active" data-section="dashboard" data-page="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span class="nav-text">Dashboard</span>
+                </li>
+                <li class="nav-item" data-section="users" data-page="users">
+                    <i class="fas fa-users"></i>
+                    <span class="nav-text">Manage Users</span>
+                </li>
+                <li class="nav-item" data-section="courses" data-page="courses">
+                    <i class="fas fa-book"></i>
+                    <span class="nav-text">Course Management</span>
+                </li>
+                
+                <li class="nav-item" data-section="announcements" data-page="announcements">
+                    <i class="fas fa-bullhorn"></i>
+                    <span class="nav-text">Announcements</span>
+                </li>
+                
+                <li class="nav-item" data-section="messages" data-page="messages">
+                    <i class="fas fa-envelope"></i>
+                    <span class="nav-text">Messages</span>
+                </li>
+            </ul>
+            
+            
+            
+            <!-- Sidebar Footer -->
+            <div class="sidebar-footer">
+                <div class="mode-toggle">
+                    <label>Dark Mode</label>
+                    <label class="switch">
+                        <input type="checkbox" id="darkModeToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="logout-text">Logout</span>
+                </button>
+            </div>
+        </nav>
+        
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+            <!-- Header -->
+           <header class="enhanced-header"> <!-- nabago -->
+        <div class="header-left">
+            <!-- Logo and college info grouped together at the top -->
+            <div class="college-branding">
+                <img src="/Images/gardner logo.png" alt="Gardner College Logo" class="college-logo">
+                <div class="college-info">
+                    <h1 class="college-name">Gardner College Cainta</h1>
+                    <p class="portal-type">Administrator Portal</p>
+                </div>
+            </div>
+            
+            <!-- Welcome message now centered below the logo and college info -->
+            <div class="header-right">
+                <div class="dynamic-welcome" id="dynamicWelcomeMessage">
+                    Welcome, <span id="userDisplayName">Jim</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Notification bell moved to the right side of the header -->
+        <div class="notification-bell" id="notificationBell">
+            <i class="fas fa-bell"></i>
+            <span class="notification-count" id="notificationCount" style="display: flex;">3</span>
+        </div>
+    </header> 
+            
+            <!-- Dashboard Content -->
+            <div class="content-section active" id="dashboard">
+                <div class="dashboard-grid">
+    <div class="dashboard-card" data-action="users">
+        <div class="card-header">
+            <h3 class="card-title">
+                <div class="card-icon blue">
+                    <i class="fas fa-users"></i>
+                </div>
+                Total Users
+            </h3>
+            <div class="card-options">
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+        </div>
+        <div class="card-content">
+            <p>View breakdown of all registered students, faculty, and admins. Monitor user growth and manage account statuses.</p>
+        </div>
+        <div class="card-more">
+            View Details <i class="fas fa-arrow-right"></i>
+        </div>
+    </div>
+
+    <div class="dashboard-card" data-action="courses">
+        <div class="card-header">
+            <h3 class="card-title">
+                <div class="card-icon green">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                Courses Activities
+            </h3>
+            <div class="card-options">
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+        </div>
+        <div class="card-content">
+            <p>Track logins, enrollments, grading, and general system activity. Monitor platform usage and performance metrics.</p>
+        </div>
+        <div class="card-more">
+            View Activities <i class="fas fa-arrow-right"></i>
+        </div>
+    </div>
+
+    <div class="dashboard-card" data-action="announcements">
+        <div class="card-header">
+            <h3 class="card-title">
+                <div class="card-icon red">
+                    <i class="fas fa-bullhorn"></i>
+                </div>
+                Manage Announcements
+            </h3>
+            <div class="card-options">
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+        </div>
+        <div class="card-content">
+            <p>Post, edit, or remove system-wide announcements. Schedule important notifications for students and faculty.</p>
+        </div>
+        <div class="card-more">
+            Manage Posts <i class="fas fa-arrow-right"></i>
+        </div>
+    </div>
+
+    <div class="dashboard-card" data-action="messages">
+        <div class="card-header">
+            <h3 class="card-title">
+                <div class="card-icon teal">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                View Conversations
+            </h3>
+            <div class="card-options">
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+        </div>
+        <div class="card-content">
+            <p>View technical alerts, maintenance logs, security warnings, and system health notifications.</p>
+        </div>
+        <div class="card-more">
+            View Alerts <i class="fas fa-arrow-right"></i>
+        </div>
+    </div>
+</div>
+
+            </div>
+            
+            <!-- Users Management Content -->
+            <div class="content-section" id="users">
+                <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-users"></i> User Management</h1>
+            <p>Manage students, faculty, registrars, and administrators</p>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-graduation-cap students"></i>
+                    <h3 id="studentCount">0</h3>
+                    <p>Students</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-chalkboard-teacher faculty"></i>
+                    <h3 id="facultyCount">0</h3>
+                    <p>Faculty</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-clipboard-list registrars"></i>
+                    <h3 id="registrarCount">0</h3>
+                    <p>Registrars</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-user-shield admins"></i>
+                    <h3 id="adminCount">0</h3>
+                    <p>Admins</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-users total"></i>
+                    <h3 id="totalCount">0</h3>
+                    <p>Total Users</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="controls-grid">
+                <div class="search-container">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search by name or email...">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+                
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-role="all">All</button>
+                    <button class="filter-btn" data-role="student">Students</button>
+                    <button class="filter-btn" data-role="faculty">Faculty</button>
+                    <button class="filter-btn" data-role="registrar">Registrars</button>
+                    <button class="filter-btn" data-role="admin">Admins</button>
+                </div>
+
+                <button class="add-user-btn" id="addUserBtn">
+                    <i class="fas fa-plus"></i> Add User
+                </button>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="users-table-container">
+            <div id="loadingIndicator" class="loading">
+                <i class="fas fa-spinner"></i>
+                <p>Loading users...</p>
+            </div>
+
+            <div id="usersTableContainer" style="display: none;">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Created</th>
+                            <th>Last Login</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="noUsersMessage" class="no-users" style="display: none;">
+                <i class="fas fa-users"></i>
+                <h3>No users found</h3>
+                <p>No users match your search criteria</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-plus"></i> Add New User</h2>
+                <button class="close-modal" onclick="closeAddUserModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="addUserForm">
+                <div class="form-container">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">
+                                <i class="fas fa-user"></i> First Name *
+                            </label>
+                            <input type="text" id="firstName" name="firstName" required placeholder="Enter first name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastName">
+                                <i class="fas fa-user"></i> Last Name *
+                            </label>
+                            <input type="text" id="lastName" name="lastName" required placeholder="Enter last name">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="username">
+                                <i class="fas fa-at"></i> Username *
+                            </label>
+                            <input type="text" id="username" name="username" required placeholder="Enter username">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">
+                                <i class="fas fa-envelope"></i> Email *
+                            </label>
+                            <input type="email" id="email" name="email" required placeholder="Enter email address">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="password">
+                                <i class="fas fa-lock"></i> Password *
+                            </label>
+                            <input type="password" id="password" name="password" required minlength="6" placeholder="Enter password (min. 6 characters)">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="role">
+                                <i class="fas fa-user-tag"></i> Role *
+                            </label>
+                            <select id="role" name="role" required>
+                                <option value="">Select Role</option>
+                                <option value="student">
+                                    <i class="fas fa-graduation-cap"></i> Student
+                                </option>
+                                <option value="faculty">
+                                    <i class="fas fa-chalkboard-teacher"></i> Faculty
+                                </option>
+                                <option value="registrar">
+                                    <i class="fas fa-clipboard-list"></i> Registrar
+                                </option>
+                                <option value="admin">
+                                    <i class="fas fa-user-shield"></i> Admin
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="button" class="modal-btn secondary" onclick="closeAddUserModal()">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="modal-btn primary">
+                        <i class="fas fa-plus"></i> Add User
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteConfirmModal" class="modal">
+        <div class="modal-content delete-modal">
+            <div class="modal-header delete-header">
+                <h2><i class="fas fa-exclamation-triangle"></i> Confirm Deletion</h2>
+                <button class="close-modal" onclick="closeDeleteModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-warning">
+                    <i class="fas fa-trash-alt delete-icon"></i>
+                    <p>Are you sure you want to delete user <strong id="deleteUserName"></strong>?</p>
+                    <p class="warning-text">This action cannot be undone.</p>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button type="button" class="modal-btn secondary" onclick="closeDeleteModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="button" class="modal-btn danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash"></i> Delete User
+                </button>
+            </div>
+        </div>
+    </div>
+            </div>
+            
+            <!-- Course Management Content -->
+            <div class="content-section" id="courses">
+                <div class="course-container">
+        <div class="section-header">
+            <h2>Course Management</h2>
+            <p>Manage courses, subjects, and academic programs offered by the institution.</p>
+        </div>
+        
+        <div class="management-container">
+            <div class="management-grid">
+                <!-- Program Selector -->
+                <div class="program-selector">
+                    <div class="selector-header">
+                        <div class="selector-icon">📚</div>
+                        <div class="selector-title">Select Program</div>
+                    </div>
+                    
+                    <div class="program-cards">
+                        <!-- Programs will be dynamically loaded here by JavaScript -->
+                        <div class="loading-message" style="text-align: center; padding: 20px; color: #666;">
+                            Loading programs...
+                        </div>
+                    </div>
+                    
+                    <div class="year-term-selector">
+                        <div class="select-wrapper">
+                            <select id="yearSelect">
+                                <option value="1st Year">1st Year</option>
+                                <option value="2nd Year">2nd Year</option>
+                                <option value="3rd Year">3rd Year</option>
+                                <option value="4th Year">4th Year</option>
+                            </select>
+                        </div>
+                        <div class="select-wrapper">
+                            <select id="termSelect">
+                                <option value="1st Term">1st Term</option>
+                                <option value="2nd Term">2nd Term</option>
+                                <option value="3rd Term">3rd Term</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Curriculum Display -->
+                <div class="curriculum-display">
+                    <div class="curriculum-header">
+                        <div class="curriculum-info">
+                            <div class="curriculum-title" id="curriculumTitle">Select a Program</div>
+                            <div class="curriculum-details" id="curriculumDetails">1st Year - 1st Term</div>
+                        </div>
+                        <div class="total-units" id="totalUnits"> Units</div>
+                    </div>
+                    
+                    <div class="search-box">
+                        <input type="text" placeholder="Search subjects..." id="searchSubjects">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                    
+                    <table class="subjects-table" id="subjectsTable">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Description</th>
+                                <th>Sec</th>
+                                <th>Units</th>
+                                <th>Prereq</th>
+                                <th>Schedule</th>
+                                <th>Instructor</th>
+                                <th>Room</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subjectsTableBody">
+                            <!-- Subjects will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="management-actions">
+                <button class="action-btn btn-primary">
+                    <span>➕</span> Add Subject
+                </button>
+                
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Subject Modal -->
+    <div class="modal-overlay" id="addSubjectModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Subject</h3>
+                <button class="modal-close" onclick="closeModal('addSubjectModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addSubjectForm">
+                    <div class="form-grid">
+    <!-- First Row -->
+    <div class="form-group">
+        <label class="form-label">Subject Code</label>
+        <input type="text" class="form-input" id="subjectCode" placeholder="e.g., IT 101" required>
+    </div>
+    <div class="form-group">
+        <label class="form-label">Units</label>
+        <input type="number" class="form-input" id="subjectUnits" min="1" max="10" placeholder="3" required>
+    </div>
+    <div class="form-group">
+        <label class="form-label">Section</label>
+        <input type="text" class="form-input" id="subjectSection" placeholder="e.g., A, B, 1">
+    </div>
+    
+    <!-- Second Row - Full Width -->
+    <div class="form-group full-width">
+        <label class="form-label">Description</label>
+        <input type="text" class="form-input" id="subjectDescription" placeholder="Subject name/description" required>
+    </div>
+    
+    <!-- Third Row -->
+    <div class="form-group double-width">
+        <label class="form-label">Prerequisites</label>
+        <input type="text" class="form-input" id="subjectPrereq" placeholder="e.g., IT 100, None">
+    </div>
+    <div class="form-group">
+        <label class="form-label">Schedule</label>
+        <input type="text" class="form-input" id="subjectSchedule" placeholder="e.g., MWF 8:00-9:00 AM">
+    </div>
+</div>
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn btn-secondary" onclick="closeModal('addSubjectModal')">Cancel</button>
+                <button class="modal-btn btn-primary" onclick="saveNewSubject()">
+                    <span>💾</span> Add Subject
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Subject Modal -->
+    <div class="modal-overlay" id="editSubjectModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Subject</h3>
+                <button class="modal-close" onclick="closeModal('editSubjectModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editSubjectForm">
+                    <input type="hidden" id="editSubjectId">
+                    <div class="form-grid">
+    <!-- First Row -->
+    <div class="form-group">
+        <label class="form-label">Subject Code</label>
+        <input type="text" class="form-input" id="editSubjectCode" required>
+    </div>
+    <div class="form-group">
+        <label class="form-label">Units</label>
+        <input type="number" class="form-input" id="editSubjectUnits" min="1" max="10" required>
+    </div>
+    <div class="form-group">
+        <label class="form-label">Section</label>
+        <input type="text" class="form-input" id="editSubjectSection">
+    </div>
+    
+    <!-- Second Row - Full Width -->
+    <div class="form-group full-width">
+        <label class="form-label">Description</label>
+        <input type="text" class="form-input" id="editSubjectDescription" required>
+    </div>
+    
+    <!-- Third Row -->
+    <div class="form-group double-width">
+        <label class="form-label">Prerequisites</label>
+        <input type="text" class="form-input" id="editSubjectPrereq">
+    </div>
+    <div class="form-group">
+        <label class="form-label">Schedule</label>
+        <input type="text" class="form-input" id="editSubjectSchedule">
+    </div>
+</div>
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn btn-secondary" onclick="closeModal('editSubjectModal')">Cancel</button>
+                <button class="modal-btn btn-primary" onclick="saveEditedSubject()">
+                    <span>💾</span> Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+            </div>
+
+            
+            
+            <!-- Enhanced Announcements Content -->
+    <div class="content-section" id="announcements">
+        <div class="announcements-container">
+            <!-- Header -->
+            <div class="announcements-header">
+                <div class="header-left">
+                    <i class="fas fa-bullhorn"></i>
+                    <div>
+                        <h2>Announcements</h2>
+                        <div class="announcement-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-list"></i>
+                                <span id="totalCount">0 Total</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span id="urgentCount">0 Urgent</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="add-announcement-btn" id="addAnnouncementBtn">
+                    <i class="fas fa-plus"></i>
+                    Add Announcement
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="announcements-content">
+                <!-- Filters -->
+                <div class="announcements-filters">
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="urgent">Urgent</button>
+                        <button class="filter-btn" data-filter="important">Important</button>
+                        <button class="filter-btn" data-filter="general">General</button>
+                    </div>
+                    <div class="search-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="search-input" placeholder="Search announcements..." id="announcementSearchInput">
+                    </div>
+                </div>
+
+                <!-- Course Filters -->
+                <div class="course-filters">
+                    <button class="course-btn active" data-course="all">All Courses</button>
+                    <button class="course-btn" data-course="BSIT">BSIT</button>
+                    <button class="course-btn" data-course="BSCS">BSCS</button>
+                    <button class="course-btn" data-course="BSIS">BSIS</button>
+                    <button class="course-btn" data-course="BSBA">BSBA</button>
+                </div>
+
+                <div class="year-filters">
+                    <button class="year-btn active" data-year="all">All Years</button>
+                    <button class="year-btn" data-year="1st-year">1st Year</button>
+                    <button class="year-btn" data-year="2nd-year">2nd Year</button>
+                    <button class="year-btn" data-year="3rd-year">3rd Year</button>
+                    <button class="year-btn" data-year="4th-year">4th Year</button>
+                </div>
+
+                <!-- Loading Spinner -->
+                <div id="loadingSpinner" class="loading-spinner" style="display: none;">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading announcements...</p>
+                </div>
+
+                <!-- Announcements List -->
+                <div class="announcements-list" id="announcementsList">
+                    <!-- Sample Announcement Card Structure -->
+                    <div class="announcement-card">
+                        <div class="announcement-header">
+                            <div class="announcement-badges">
+                                <span class="priority-badge urgent">Urgent</span>
+                                <span class="course-badge">BSIT</span>
+                                <span class="year-badge">1st Year</span>
+                            </div>
+                            <div class="announcement-actions">
+                                <button class="action-btn edit" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn delete" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <h3 class="announcement-title">Sample Announcement Title</h3>
+                        <div class="announcement-content">
+                            This is a sample announcement content that demonstrates the structure and styling.
+                        </div>
+                        <img src="https://via.placeholder.com/400x200" alt="Announcement image" class="announcement-image">
+                        <div class="announcement-meta">
+                            <div class="meta-left">
+                                <div class="meta-item">
+                                    <i class="fas fa-user"></i>
+                                    <span>Admin User</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>Aug 5, 2024, 10:30 AM</span>
+                                </div>
+                            </div>
+                            <div class="view-count">
+                                <i class="fas fa-eye"></i>
+                                <span>124 views</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- No announcements message -->
+                    <div class="no-announcements" id="noAnnouncementsMessage" style="display: none;">
+                        <i class="fas fa-bullhorn"></i>
+                        <h3>No Announcements Yet</h3>
+                        <p>Click "Add Announcement" to create your first announcement.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Add/Edit Announcement Modal -->
+        <div class="modal-overlay" id="announcementModal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3 id="modalTitle">Add New Announcement</h3>
+                    <button class="modal-close" id="modalCloseBtn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="announcementForm">
+                        <div class="form-group">
+                            <label class="form-label" for="announcementTitle">Title *</label>
+                            <input type="text" class="form-input" id="announcementTitle" required placeholder="Enter announcement title">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="announcementContent">Content *</label>
+                            <textarea class="form-input form-textarea" id="announcementContent" required placeholder="Enter announcement content..." rows="5"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="targetAudience">Target Audience</label>
+                            <select class="form-input form-select" id="targetAudience">
+                                <option value="All Students">All Students</option>
+                                <option value="Registrar">Registrar</option>
+                                <option value="Faculty">Faculty</option>
+                            </select>
+                        </div>
+
+                        <div class="course-year-grid">
+                            <div class="form-group">
+                                <label class="form-label" for="targetCourse">Target Course</label>
+                                <select class="form-input form-select" id="targetCourse">
+                                    <option value="All">All Courses</option>
+                                    <option value="BSIT">BSIT</option>
+                                    <option value="BSCS">BSCS</option>
+                                    <option value="BSIS">BSIS</option>
+                                    <option value="BSBA">BSBA</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="targetYear">Target Year Level</label>
+                                <select class="form-input form-select" id="targetYear">
+                                    <option value="All">All Year Levels</option>
+                                    <option value="1st Year">1st Year</option>
+                                    <option value="2nd Year">2nd Year</option>
+                                    <option value="3rd Year">3rd Year</option>
+                                    <option value="4th Year">4th Year</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Priority Level *</label>
+                            <div class="priority-options">
+                                <div class="priority-option">
+                                    <input type="radio" class="priority-radio" id="priorityGeneral" name="priority" value="general" checked>
+                                    <label class="priority-label general" for="priorityGeneral">General</label>
+                                </div>
+                                <div class="priority-option">
+                                    <input type="radio" class="priority-radio" id="priorityImportant" name="priority" value="important">
+                                    <label class="priority-label important" for="priorityImportant">Important</label>
+                                </div>
+                                <div class="priority-option">
+                                    <input type="radio" class="priority-radio" id="priorityUrgent" name="priority" value="urgent">
+                                    <label class="priority-label urgent" for="priorityUrgent">Urgent</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Attachment (Optional)</label>
+                            <div class="image-upload-area" id="imageUploadContainer">
+                                <div class="upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <div class="upload-text">
+                                    <strong>Click to upload</strong> or drag and drop
+                                </div>
+                                <div class="upload-hint">
+                                    PNG, JPG, GIF up to 5MB
+                                </div>
+                                <input type="file" id="imageInput" name="image" accept="image/*" style="display: none;">
+                            </div>
+                            <div id="imagePreview" class="image-preview" style="display: none;">
+                                <img id="previewImage" alt="Preview">
+                                <button type="button" id="removeImageBtn" class="remove-image-btn">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- ADD this section after the image upload group in the modal -->
+<div class="form-group">
+    <label class="form-label">Document Attachment (Optional)</label>
+    <div class="document-upload-area" id="documentUploadContainer">
+        <div class="upload-icon">
+            <i class="fas fa-file-upload"></i>
+        </div>
+        <div class="upload-text">
+            <strong>Click to upload document</strong> or drag and drop
+        </div>
+        <div class="upload-hint">
+            PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT up to 10MB
+        </div>
+        <input type="file" id="documentInput" name="document" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt" style="display: none;">
+    </div>
+    <div id="documentPreview" class="document-preview" style="display: none;">
+        <div id="documentInfo" class="document-info"></div>
+        <button type="button" id="removeDocumentBtn" class="remove-document-btn">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="saveBtn" form="announcementForm">
+                        <i class="fas fa-save" id="saveIcon"></i>
+                        <span id="saveBtnText">Save Announcement</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success/Error Alert Messages -->
+        <div id="alertContainer" style="position: fixed; top: 20px; right: 20px; z-index: 1001; max-width: 400px;">
+            <!-- Alerts will be dynamically inserted here -->
+        </div>
+    </div>
+            
+            
+            
+            <!-- Messages Content -->
+            <div class="content-section" id="messages">
+                <div class="chat-container">
+        <!-- Left Sidebar - Contacts -->
+        <div class="contacts-panel">
+            <div class="contacts-header">
+                <h3>Messages</h3>
+                
+            </div>
+            
+            <div class="search-section">
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" placeholder="Search contacts..." oninput="filterContacts(this.value)">
+                </div>
+                <div class="role-filters">
+                    <button class="role-tag active" onclick="filterByRole('all')">All</button>
+                    <button class="role-tag" onclick="filterByRole('student')">Students</button>
+                    <button class="role-tag" onclick="filterByRole('registrar')">Registrar</button>
+                    <button class="role-tag" onclick="filterByRole('faculty')">Faculty</button>
+                </div>
+            </div>
+            
+            <div class="contacts-list" id="contactsList">
+                <!-- Contacts will be populated here -->
+            </div>
+        </div>
+
+        <!-- Right Panel - Chat -->
+        <div class="chat-panel">
+            <div class="empty-chat" id="emptyChat">
+                <i class="fas fa-comments"></i>
+                <h3>Welcome to Academic Chat</h3>
+                <p>Select a contact from the left panel to start a conversation with Faculty, Registrar, or Students.</p>
+            </div>
+            
+            <div class="chat-header" id="chatHeader" style="display: none;">
+                <button class="mobile-back-btn" onclick="closeMobileChat()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div class="chat-user-info">
+                    <div class="chat-avatar" id="chatAvatar">
+                        JD
+                        <div class="online-indicator"></div>
+                    </div>
+                    <div class="chat-user-details">
+                        <h4 id="chatUserName">John Doe</h4>
+                        <p id="chatUserRole">Student • Computer Science</p>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="chat-messages" id="chatMessages" style="display: none;">
+                <!-- Messages will be populated here -->
+            </div>
+            
+            <div class="chat-input-container" id="chatInputContainer" style="display: none;">
+                <div class="chat-input-wrapper">
+                    <textarea class="chat-input" id="messageInput" placeholder="Type a message..." rows="1" onkeypress="handleKeyPress(event)" oninput="autoResize(this)"></textarea>
+                    <div class="input-actions">
+                        <button class="input-action-btn" onclick="attachFile()">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <button class="input-action-btn send-btn" onclick="sendMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+            </div>
+            
+            
+        </main>
+    </div>
+
+    <script>
+                // Admin Dashboard Script - Fixed to override authCheck.js
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("🎯 Admin Dashboard loaded - fixing user display...");
+    
+    // Function to get current user data from sessionStorage
+    function getCurrentUser() {
+        try {
+            const userData = sessionStorage.getItem('userData');
+            if (userData) {
+                const user = JSON.parse(userData);
+                console.log("👤 Current user data:", user);
+                return user;
+            }
+            console.log("❌ No user data found");
+            return null;
+        } catch (error) {
+            console.error("❌ Error parsing user data:", error);
+            return null;
+        }
+    }
+    
+    // Function to update user display with correct name
+    function updateUserDisplayWithCorrectName() {
+        console.log("🔄 Updating user display with correct name...");
+        
+        const user = getCurrentUser();
+        if (!user) {
+            console.log("❌ No user data available");
+            return;
+        }
+        
+        // Get the actual name from the database - try different fields
+        let userName = null;
+        
+        // Try different name combinations (adjust based on your database structure)
+        if (user.first_name && user.last_name) {
+            userName = `${user.first_name} ${user.last_name}`;
+            console.log("✅ Using first_name + last_name:", userName);
+        } else if (user.name) {
+            userName = user.name;
+            console.log("✅ Using user.name:", userName);
+        } else if (user.username) {
+            userName = user.username;
+            console.log("✅ Using username:", userName);
+        } else if (user.first_name) {
+            userName = user.first_name;
+            console.log("✅ Using first_name only:", userName);
+        } else {
+            userName = 'Admin';
+            console.log("⚠️ Using default 'Admin'");
+        }
+        
+        console.log("🎭 Final userName:", userName);
+        
+        // Update all possible elements that might display the user name
+        updateAllUserNameElements(userName);
+    }
+    
+    // Function to update all user name elements with dynamic greeting
+function updateAllUserNameElements(userName) {
+    console.log("📝 Updating all user name elements to:", userName);
+    
+    // 1. Update sidebar user name
+    const sidebarUserName = document.getElementById('userName');
+    if (sidebarUserName) {
+        sidebarUserName.textContent = userName;
+        console.log("✅ Updated #userName");
+    }
+    
+    // 2. Update the new dynamic welcome message with college branding
+    const dynamicWelcomeMessage = document.getElementById('dynamicWelcomeMessage');
+    const userDisplayName = document.getElementById('userDisplayName');
+    
+    if (dynamicWelcomeMessage && userDisplayName) {
+        const firstName = userName.split(' ')[0];
+        userDisplayName.textContent = firstName;
+        console.log("✅ Updated dynamic welcome message");
+    }
+    
+    // 3. Keep existing functionality for other welcome messages (if any exist elsewhere)
+    const welcomeMessages = document.querySelectorAll('.welcome-message:not(#dynamicWelcomeMessage)');
+    welcomeMessages.forEach((element, index) => {
+        const firstName = userName.split(' ')[0];
+        element.textContent = `Welcome, ${firstName}`;
+        console.log(`✅ Updated welcome message ${index + 1}`);
+    });
+    
+    // 4. Update user info sections
+    const userInfoH3 = document.querySelectorAll('.user-info h3');
+    userInfoH3.forEach((element, index) => {
+        element.textContent = userName;
+        console.log(`✅ Updated user-info h3 ${index + 1}`);
+    });
+    
+    // 5. Update any data-user-name elements
+    const userNameElements = document.querySelectorAll('[data-user-name]');
+    userNameElements.forEach((el, index) => {
+        el.textContent = userName;
+        console.log(`✅ Updated data-user-name ${index + 1}`);
+    });
+    
+    console.log("✅ All user name elements updated with dynamic greeting");
+}
+    
+    // Initialize with multiple delays to ensure it runs after authCheck.js
+    function initializeWithDelay() {
+        // First attempt - immediate
+        setTimeout(() => {
+            console.log("🚀 First attempt to update user display...");
+            updateUserDisplayWithCorrectName();
+        }, 100);
+        
+        // Second attempt - after authCheck.js typically runs
+        setTimeout(() => {
+            console.log("🚀 Second attempt to update user display...");
+            updateUserDisplayWithCorrectName();
+        }, 500);
+        
+        // Third attempt - ensure it sticks
+        setTimeout(() => {
+            console.log("🚀 Final attempt to update user display...");
+            updateUserDisplayWithCorrectName();
+        }, 1000);
+    }
+    
+    // Start the initialization
+    initializeWithDelay();
+    
+    // Also watch for any changes and re-apply our correct name
+    const userName = document.getElementById('userName');
+    if (userName) {
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (userName.textContent === 'Admin') {
+                    console.log("🔍 Detected 'Admin' was set, fixing it...");
+                    setTimeout(() => {
+                        updateUserDisplayWithCorrectName();
+                    }, 50);
+                }
+            });
+        });
+        
+        observer.observe(userName, {
+            childList: true,
+            subtree: true,
+            characterData: true
+        });
+        
+        console.log("👀 Watching for unwanted changes to userName...");
+    }
+    
+    // Rest of your existing functionality
+    const navItems = document.querySelectorAll('.nav-item');
+    const contentSections = document.querySelectorAll('.content-section');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+
+    // Initialize image upload functionality
+    initializeImageUpload();
+
+    // Navigation switching
+    navItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetSection = this.getAttribute('data-section');
+            const page = this.getAttribute('data-page');
+            
+            // Remove active class from all nav items
+            navItems.forEach(nav => nav.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Hide all content sections
+            contentSections.forEach(section => section.classList.remove('active'));
+            
+            // Show target section
+            const targetElement = document.getElementById(targetSection);
+            if (targetElement) {
+                targetElement.classList.add('active');
+            }
+            
+            if (page) {
+                console.log(`Navigate to: ${page}`);
+            }
+        });
+    });
+
+    // Enhanced sidebar toggle functionality
+    if (sidebarToggle && sidebar) {
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            if (mainContent) {
+                mainContent.classList.toggle('expanded');
+            }
+        });
+    }
+
+    // Dashboard card click functionality
+    const dashboardCards = document.querySelectorAll('.dashboard-card');
+    dashboardCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const action = this.getAttribute('data-action');
+            
+            switch(action) {
+                case 'users':
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    document.querySelector('[data-section="users"]').classList.add('active');
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    document.getElementById('users').classList.add('active');
+                    break;
+                case 'announcements':
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    document.querySelector('[data-section="announcements"]').classList.add('active');
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    document.getElementById('announcements').classList.add('active');
+                    break;
+                case 'reports':
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    document.querySelector('[data-section="reports"]').classList.add('active');
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    document.getElementById('reports').classList.add('active');
+                    break;
+                case 'messages':
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    document.querySelector('[data-section="messages"]').classList.add('active');
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    document.getElementById('messages').classList.add('active');
+                    break;
+                case 'courses':
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    document.querySelector('[data-section="courses"]').classList.add('active');
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    document.getElementById('courses').classList.add('active');
+                    break;
+                
+                default:
+                    console.log('Card clicked:', action);
+            }
+        });
+    });
+
+    // Dark mode toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    if (darkModeToggle) {
+        let isDarkMode = localStorage.getItem('darkMode') === 'enabled';
+
+        if (isDarkMode) {
+            darkModeToggle.checked = true;
+            applyDarkMode(true);
+        }
+
+        darkModeToggle.addEventListener('change', function() {
+            isDarkMode = this.checked;
+            applyDarkMode(isDarkMode);
+            
+            if (isDarkMode) {
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        });
+    }
+
+    // Logout functionality
+    const logoutBtn = document.querySelector('.logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            if (confirm('Are you sure you want to logout?')) {
+                sessionStorage.clear();
+                
+                const darkModePreference = localStorage.getItem('darkMode');
+                const userAvatar = localStorage.getItem('userAvatar');
+                localStorage.clear();
+                if (darkModePreference) {
+                    localStorage.setItem('darkMode', darkModePreference);
+                }
+                if (userAvatar) {
+                    localStorage.setItem('userAvatar', userAvatar);
+                }
+
+                showNotification('Logging out...', 'info');
+                
+                setTimeout(() => {
+                    window.location.href = '../login.html';
+                }, 1000);
+            }
+        });
+    }
+});
+
+// Image Upload Functionality
+function initializeImageUpload() {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.style.display = 'none';
+    fileInput.id = 'imageUploadInput';
+    document.body.appendChild(fileInput);
+
+    const avatarContainer = document.getElementById('avatarContainer');
+    if (avatarContainer) {
+        avatarContainer.style.cursor = 'pointer';
+        avatarContainer.title = 'Click to upload profile picture';
+        
+        avatarContainer.addEventListener('click', function() {
+            fileInput.click();
+        });
+    }
+
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            handleImageUpload(file);
+        }
+    });
+}
+
+function handleImageUpload(file) {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+        showNotification('Please select a valid image file (JPEG, PNG, GIF, or WebP)', 'error');
+        return;
+    }
+
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+        showNotification('Image size must be less than 5MB', 'error');
+        return;
+    }
+
+    const avatarContainer = document.getElementById('avatarContainer');
+    const originalContent = avatarContainer.innerHTML;
+    avatarContainer.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        const imageDataUrl = e.target.result;
+        const img = new Image();
+        
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            const maxWidth = 200;
+            const maxHeight = 200;
+            
+            let { width, height } = img;
+            
+            if (width > height) {
+                if (width > maxWidth) {
+                    height *= maxWidth / width;
+                    width = maxWidth;
+                }
+            } else {
+                if (height > maxHeight) {
+                    width *= maxHeight / height;
+                    height = maxHeight;
+                }
+            }
+            
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            const resizedImageDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+            updateAvatarImage(resizedImageDataUrl);
+            localStorage.setItem('userAvatar', resizedImageDataUrl);
+            showNotification('Profile picture updated successfully!', 'success');
+        };
+        
+        img.onerror = function() {
+            avatarContainer.innerHTML = originalContent;
+            showNotification('Error loading image. Please try again.', 'error');
+        };
+        
+        img.src = imageDataUrl;
+    };
+    
+    reader.onerror = function() {
+        avatarContainer.innerHTML = originalContent;
+        showNotification('Error reading file. Please try again.', 'error');
+    };
+    
+    reader.readAsDataURL(file);
+}
+
+function updateAvatarImage(imageDataUrl) {
+    const avatarContainer = document.getElementById('avatarContainer');
+    
+    const img = document.createElement('img');
+    img.src = imageDataUrl;
+    img.style.width = '100%';
+    img.style.height = '100%';
+    img.style.objectFit = 'cover';
+    img.style.borderRadius = '50%';
+    
+    avatarContainer.innerHTML = '';
+    avatarContainer.appendChild(img);
+    
+    const overlay = document.createElement('div');
+    overlay.style.position = 'absolute';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(0,0,0,0.3)';
+    overlay.style.borderRadius = '50%';
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+    overlay.style.opacity = '0';
+    overlay.style.transition = 'opacity 0.3s ease';
+    overlay.innerHTML = '<i class="fas fa-camera" style="color: white; font-size: 16px;"></i>';
+    
+    avatarContainer.style.position = 'relative';
+    avatarContainer.appendChild(overlay);
+    
+    avatarContainer.addEventListener('mouseenter', () => {
+        overlay.style.opacity = '1';
+    });
+    
+    avatarContainer.addEventListener('mouseleave', () => {
+        overlay.style.opacity = '0';
+    });
+}
+
+// Load saved avatar on page load
+function loadSavedAvatar() {
+    const savedAvatar = localStorage.getItem('userAvatar');
+    if (savedAvatar) {
+        updateAvatarImage(savedAvatar);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadSavedAvatar();
+});
+
+// Notification system
+function showNotification(message, type = 'info') {
+    const existingNotifications = document.querySelectorAll('.custom-notification');
+    existingNotifications.forEach(notification => notification.remove());
+    
+    const notification = document.createElement('div');
+    notification.className = `custom-notification notification-${type}`;
+    
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#27ae60' : type === 'error' ? '#e74c3c' : '#3498db'};
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        z-index: 10000;
+        font-size: 14px;
+        font-weight: 500;
+        max-width: 300px;
+        word-wrap: break-word;
+        animation: slideInRight 0.3s ease-out;
+    `;
+    
+    const icon = type === 'success' ? 'fa-check-circle' : 
+                 type === 'error' ? 'fa-exclamation-circle' : 
+                 'fa-info-circle';
+    
+    notification.innerHTML = `
+        <i class="fas ${icon}" style="margin-right: 8px;"></i>
+        ${message}
+    `;
+    
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.3s ease-out';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 300);
+    }, 4000);
+    
+    notification.addEventListener('click', () => {
+        notification.style.animation = 'slideOutRight 0.3s ease-out';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 300);
+    });
+}
+
+// Dark Mode Application Function
+function applyDarkMode(isDark) {
+    if (isDark) {
+        document.body.classList.add('dark-mode');
+        document.body.style.background = '#1a1a1a';
+        
+        const topBar = document.querySelector('.top-bar');
+        if (topBar) {
+            topBar.style.background = '#2c2c2c';
+        }
+        
+        document.querySelectorAll('.dashboard-card').forEach(card => {
+            card.style.background = '#2c2c2c';
+            card.style.color = '#ffffff';
+        });
+    } else {
+        document.body.classList.remove('dark-mode');
+        document.body.style.background = '#f5f7fa';
+        
+        const topBar = document.querySelector('.top-bar');
+        if (topBar) {
+            topBar.style.background = 'white';
+        }
+        
+        document.querySelectorAll('.dashboard-card').forEach(card => {
+            card.style.background = 'white';
+            card.style.color = 'inherit';
+        });
+    }
+}
+
+     // Enhanced Notification functionality
+document.getElementById('notificationIcon').addEventListener('click', function() {
+    showNotification('Notifications:\n1. New Student Registration (5 new students)\n2. System Maintenance Tonight\n3. Grade Reports Ready', 'info');
+});
+
+
+
+    </script>
+
+    
+
+    <script src="../announcements.js"></script>
+    <script src="../authCheck.js"></script>
+    <script src="../chat.js"></script>
+    <script src="../users.js"></script>
+    <script src="courseManagement.js"></script>
+    <script src="admindashboard.js"></script>
+    
+    
+</body>
+</html>

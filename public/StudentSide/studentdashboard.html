@@ -1,0 +1,2123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="studentdashboard.css">
+    <link rel="stylesheet" href="../notifications.css">
+    <!-- ADD THESE SCRIPT TAGS FOR PDF AND EXCEL GENERATION -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+</head>
+<body>
+    <script src="../authCheck.js"></script>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="user-profile">
+                <div class="avatar sidebar-user-avatar" id="avatarUpload">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-info">
+                    <h3 class="sidebar-user-name" id="userNameDisplay"></h3>
+                    <div class="user-course sidebar-user-info"></div>
+                    <div class="user-role" id="userRoleDisplay">Student</div>
+                </div>
+            </div>
+            
+            <div class="menu-label">Navigation</div>
+            <ul class="nav-menu">
+                <li class="nav-item active" data-content="dashboard">
+                    <i class="fas fa-home"></i> <span class="nav-text">Dashboard</span>
+                </li>
+                <li class="nav-item" data-content="enroll">
+                    <i class="fas fa-graduation-cap"></i> <span class="nav-text">Enroll Now</span>
+                </li>
+                <li class="nav-item" data-content="announcements">
+                    <i class="fas fa-bullhorn"></i> <span class="nav-text">Announcements</span> 
+                </li>
+                <li class="nav-item" data-content="schedule">
+                    <i class="fas fa-calendar"></i> <span class="nav-text">Schedule</span>
+                </li>
+                <li class="nav-item" data-content="grades">
+                    <i class="fas fa-chart-bar"></i> <span class="nav-text">Grades</span>
+                </li>
+                <li class="nav-item" data-content="messages">
+                    <i class="fas fa-comments"></i> <span class="nav-text">Messages</span> 
+                </li>
+                <div class="menu-label">Account</div>
+                <li class="nav-item" data-content="profile">
+                    <i class="fas fa-user-circle"></i> <span class="nav-text">Profile</span>
+                </li>
+                
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="mode-toggle">
+                    <label>Dark Mode</label>
+                    <label class="switch">
+                        <input type="checkbox" id="darkModeToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <button id="logoutBtn" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="logout-text">Logout</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <header class="enhanced-header">
+    <div class="header-left">
+        <div class="college-branding">
+            <img src="/Images/gardner logo.png" alt="Gardner College Logo" class="college-logo">
+            <div class="college-info">
+                <h1 class="college-name">Gardner College Cainta</h1>
+                <p class="portal-type">Student Portal</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="header-right">
+        <div class="dynamic-welcome" id="dynamicWelcomeMessage">
+            Welcome, <span id="userDisplayName"></span>
+        </div>
+        <!-- Notification Bell Component -->
+        <div class="notification-bell-container">
+            <button class="notification-bell" id="notificationBell">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+            </button>
+            
+            <!-- Notification Dropdown -->
+            <div class="notification-dropdown" id="notificationDropdown">
+                <div class="notification-header">
+                    <h3>Notifications</h3>
+                    <a href="#" class="clear-all" id="clearAllBtn">Mark All as Read</a>
+                </div>
+                <div class="notification-list" id="notificationList">
+                    <div class="no-notifications">
+                        <i class="fas fa-bell-slash"></i>
+                        <p>No new notifications</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</header>
+            
+            <!-- Dashboard Section -->
+            <div class="content-section active" id="dashboard">
+                <div class="dashboard-grid">
+                    <div class="dashboard-card" onclick="handleQuickEnroll()">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <div class="card-icon">
+                                    <i class="fas fa-plus-circle"></i>
+                                </div>
+                                <span style="margin-left: 15px;">Quick Enroll</span>
+                            </div>
+                            <div class="card-options">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <p>Easily enroll in available courses for the upcoming semester. Browse and register for classes quickly.</p>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card" onclick="handleShowAnnouncement()">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <div class="card-icon" style="background-color: #e74c3c;">
+                                    <i class="fas fa-bullhorn"></i>
+                                </div>
+                                <span style="margin-left: 15px;">Show Announcement</span>
+                            </div>
+                            <div class="card-options">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <p>Stay updated with the latest announcements from your instructors and academic departments.</p>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card" onclick="handleViewGrades()">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <div class="card-icon" style="background-color: #27ae60;">
+                                    <i class="fas fa-chart-bar"></i>
+                                </div>
+                                <span style="margin-left: 15px;">View Grades</span>
+                            </div>
+                            <div class="card-options">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <p>Check your academic performance and view detailed grade reports for all your courses.</p>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card" onclick="handleUpcomingEvents()">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <div class="card-icon" style="background-color: #f39c12;">
+                                    <i class="fas fa-calendar"></i>
+                                </div>
+                                <span style="margin-left: 15px;">Upcoming Events</span>
+                            </div>
+                            <div class="card-options">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <p>Check your schedule for upcoming classes, exams, and important academic events.</p>
+                        </div>
+                    </div>
+                    
+                </div>
+                <!-- ADD THIS SECTION AFTER THE dashboard-grid CLOSING TAG -->
+<div class="dashboard-bottom-section">
+    <!-- Left Side: Schedule Preview -->
+    <div class="dashboard-schedule-preview">
+        <div class="preview-header">
+            <h3><i class="fas fa-calendar-day"></i> Today's Schedule</h3>
+            <button class="view-all-btn" onclick="showSection('schedule')">
+                <i class="fas fa-external-link-alt"></i> View All
+            </button>
+        </div>
+        <div class="schedule-preview-content" id="dashboardScheduleContent">
+            <div class="loading-schedule">
+                <div class="loading-spinner"></div>
+                <p>Loading today's schedule...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Side: Calendar -->
+    <div class="dashboard-calendar-container">
+    <div class="calendar-header">
+        <h3><i class="fas fa-calendar-alt"></i> Academic Calendar</h3>
+        <div class="calendar-nav">
+            <button class="nav-btn" id="prevMonth">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="current-month-year" id="currentMonthYear">
+                January 2025
+            </div>
+            <button class="nav-btn" id="nextMonth">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+    <div class="calendar-content">
+        <div class="calendar-grid" id="calendarGrid">
+            <!-- Calendar will be generated here -->
+        </div>
+    </div>
+</div>
+</div>
+
+            </div>
+
+
+            <!-- Enroll Section -->
+            <div class="content-section" id="enroll">
+                <div class="enrollment-system">
+                    <!-- Enhanced Header -->
+                    <div class="system-header">
+                        <h1><i class="fas fa-graduation-cap"></i> Course Enrollment System</h1>
+                        <p class="system-subtitle">Select your program, customize your subjects, and complete your enrollment</p>
+                    </div>
+
+                    <!-- Enhanced Status Tracker -->
+                    <div class="enrollment-status">
+                        <div class="status-tracker">
+                            <div class="status-step active">
+                                <div class="status-step-icon">
+                                    <i class="fas fa-user-graduate"></i>
+                                </div>
+                                <div class="status-step-text">Select Program</div>
+                            </div>
+                            <div class="status-step pending">
+                                <div class="status-step-icon">
+                                    <i class="fas fa-upload"></i>
+                                </div>
+                                <div class="status-step-text">Upload Payment</div>
+                            </div>
+                            <div class="status-step pending">
+                                <div class="status-step-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="status-step-text">Enrollment Complete</div>
+                            </div>
+                            <div class="status-progress-line">
+                                <div class="status-progress-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Content Grid -->
+                    <div class="content-grid">
+                        <!-- Enhanced Left Panel -->
+                        <div class="left-panel">
+                            <!-- Fee Breakdown Section -->
+                            <div class="fee-section">
+                                <div class="section-title">
+                                    <i class="fas fa-receipt"></i>
+                                    Breakdown of Fees
+                                </div>
+
+                                <table class="fee-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Fee's Type</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Tuition</td>
+                                            <td>₱4,923.15</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Laboratory</td>
+                                            <td>500</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Miscellaneous</td>
+                                            <td>₱300</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Enrollment Fee</td>
+                                            <td>₱200</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Registration (1 Time Payment)</td>
+                                            <td>--</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Installment Charge (15% Add on)</td>
+                                            <td>₱599.25</td>
+                                        </tr>
+                                        <tr class="total-row">
+                                            <td>TOTAL:</td>
+                                            <td>₱6,522.4</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Enhanced Payment Details -->
+                            <div class="payment-section">
+                                <div class="section-title">
+                                    <i class="fas fa-credit-card"></i>
+                                    Payment Details
+                                    <p><h6>You can deposit your payments to any BDO Bank or using a Bank Transfer using GCASH.</h6></p>
+                                </div>
+
+                                <div class="bank-details">
+                                    <h4>GCASH STA. LUCIA</h4>
+                                    <h5>Account Name:</h5>
+                                    Ma'am Lai Zapanta<br><br>
+                                    <h5>Account Number:</h5>
+                                    0 9 1 7 - 1 2 3 - 4 5 6 7<br><br>
+                                    <h4>BDO STA. LUCIA</h4>
+                                    <div class="bank-info">
+                                        <strong>Account Name:</strong><br>
+                                        GARDNER COLLEGE CAINTA, INC.<br><br>
+                                        <strong>Account Number:</strong><br>
+                                        0 0 2 1 4 - 0 0 0 5 0 6 2
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Enhanced Upload Section -->
+                            <div class="upload-section">
+                                <div class="section-title">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    Upload Payment Proof
+                                </div>
+
+                                <div class="upload-area" id="uploadArea">
+                                    <input type="file" class="file-input" id="paymentProof" accept="image/*,.pdf" multiple>
+                                    <div class="upload-icon">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                    <h4>Drop your payment receipt here</h4>
+                                    <p style="font-size: 14px; color: #6c757d; margin-top: 10px;">
+                                        or <strong style="color: #3498db;">click to browse</strong>
+                                    </p>
+                                    <small style="color: #6c757d;">Supports: JPG, PNG, PDF (Max: 5MB each)</small>
+                                </div>
+
+                                <div class="uploaded-file" id="uploadedFile">
+                                    <i class="fas fa-file-image" style="color: #28a745; font-size: 20px;"></i>
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; color: #2c3e50;" id="fileName">payment_receipt.jpg</div>
+                                        <div style="font-size: 12px; color: #6c757d;" id="fileSize">2.3 MB</div>
+                                    </div>
+                                    <button type="button" style="background: none; border: none; color: #dc3545; cursor: pointer;" onclick="removeFile()">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Enhanced Right Panel -->
+                        <div class="right-panel">
+                            <form id="enrollmentForm">
+                                <!-- Student Type Selection -->
+                                <div class="form-section">
+                                    <div class="form-section-title">
+                                        <i class="fas fa-user-tag"></i>
+                                        Student Type
+                                    </div>
+                                    <div class="student-type-toggle">
+                                        <div class="toggle-container">
+                                            <div class="toggle-label active" id="regularLabel">Regular Student</div>
+                                            <div class="toggle-switch" id="studentTypeToggle">
+                                                <div class="toggle-slider"></div>
+                                            </div>
+                                            <div class="toggle-label" id="irregularLabel">Irregular Student</div>
+                                        </div>
+                                        <p style="text-align: center; font-size: 13px; color: #6c757d; margin-top: 10px;">
+                                            <i class="fas fa-info-circle"></i>
+                                            Choose "Irregular" if you need to adjust your subject selection
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Program Selection -->
+                                <div class="form-section">
+                                    <div class="form-section-title">
+                                        <i class="fas fa-book"></i>
+                                        Choose Your Program
+                                    </div>
+                                    <div class="selection-grid">
+                                        <label class="selection-card" for="bsit">
+                                            <input type="radio" id="bsit" name="program" value="BSIT">
+                                            <div class="card-icon"><i class="fas fa-laptop-code"></i></div>
+                                            <div class="card-title">BSIT</div>
+                                            <div class="card-description">Bachelor of Science in Information Technology</div>
+                                        </label>
+
+                                        <label class="selection-card" for="bscs">
+                                            <input type="radio" id="bscs" name="program" value="BSCS">
+                                            <div class="card-icon"><i class="fas fa-desktop"></i></div>
+                                            <div class="card-title">BSCS</div>
+                                            <div class="card-description">Bachelor of Science in Computer Science</div>
+                                        </label>
+
+                                        <label class="selection-card" for="bsis">
+                                            <input type="radio" id="bsis" name="program" value="BSIS">
+                                            <div class="card-icon"><i class="fas fa-network-wired"></i></div>
+                                            <div class="card-title">BSIS</div>
+                                            <div class="card-description">Bachelor of Science in Information Systems</div>
+                                        </label>
+
+                                        <label class="selection-card" for="bsba">
+                                            <input type="radio" id="bsba" name="program" value="BSBA">
+                                            <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                                            <div class="card-title">BSBA</div>
+                                            <div class="card-description">Bachelor of Science in Business Administration</div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Year Level Selection -->
+                                <div class="form-section">
+                                    <div class="form-section-title">
+                                        <i class="fas fa-layer-group"></i>
+                                        Year Level
+                                    </div>
+                                    <div class="year-level-grid">
+                                        <label class="year-card" for="year1">
+                                            <input type="radio" id="year1" name="yearLevel" value="1st Year">
+                                            <div style="font-size: 24px; font-weight: 700; color: #3498db; margin-bottom: 8px;">1st</div>
+                                            <div style="font-size: 14px; color: #6c757d;">First Year</div>
+                                        </label>
+
+                                        <label class="year-card" for="year2">
+                                            <input type="radio" id="year2" name="yearLevel" value="2nd Year">
+                                            <div style="font-size: 24px; font-weight: 700; color: #3498db; margin-bottom: 8px;">2nd</div>
+                                            <div style="font-size: 14px; color: #6c757d;">Second Year</div>
+                                        </label>
+
+                                        <label class="year-card" for="year3">
+                                            <input type="radio" id="year3" name="yearLevel" value="3rd Year">
+                                            <div style="font-size: 24px; font-weight: 700; color: #3498db; margin-bottom: 8px;">3rd</div>
+                                            <div style="font-size: 14px; color: #6c757d;">Third Year</div>
+                                        </label>
+
+                                        <label class="year-card" for="year4">
+                                            <input type="radio" id="year4" name="yearLevel" value="4th Year">
+                                            <div style="font-size: 24px; font-weight: 700; color: #3498db; margin-bottom: 8px;">4th</div>
+                                            <div style="font-size: 14px; color: #6c757d;">Fourth Year</div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Academic Term Selection -->
+                                <div class="form-section">
+                                    <div class="form-section-title">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        Academic Term
+                                    </div>
+                                    <div class="term-grid">
+                                        <label class="term-card" for="term1">
+                                            <input type="radio" id="term1" name="academicTerm" value="1st Term">
+                                            <div style="font-size: 20px; color: #3498db; margin-bottom: 10px;"><i class="fas fa-calendar-day"></i></div>
+                                            <div style="font-size: 16px; font-weight: 600; color: #2c3e50; margin-bottom: 5px;">1st Term</div>
+                                            <div style="font-size: 12px; color: #6c757d;">September - December</div>
+                                        </label>
+
+                                        <label class="term-card" for="term2">
+                                            <input type="radio" id="term2" name="academicTerm" value="2nd Term">
+                                            <div style="font-size: 20px; color: #3498db; margin-bottom: 10px;"><i class="fas fa-calendar-week"></i></div>
+                                            <div style="font-size: 16px; font-weight: 600; color: #2c3e50; margin-bottom: 5px;">2nd Term</div>
+                                            <div style="font-size: 12px; color: #6c757d;">January - April</div>
+                                        </label>
+
+                                        <label class="term-card" for="term3">
+                                            <input type="radio" id="term3" name="academicTerm" value="3rd Term">
+                                            <div style="font-size: 20px; color: #3498db; margin-bottom: 10px;"><i class="fas fa-calendar-alt"></i></div>
+                                            <div style="font-size: 16px; font-weight: 600; color: #2c3e50; margin-bottom: 5px;">3rd Term</div>
+                                            <div style="font-size: 12px; color: #6c757d;">May - August</div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Subject Adjustment for Irregular Students -->
+                                <div class="subject-adjustment" id="subjectAdjustment">
+                                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                                        <i class="fas fa-edit" style="color: #856404; font-size: 18px;"></i>
+                                        <h4 style="color: #856404; margin: 0;">Adjust Subject Selection</h4>
+                                    </div>
+                                    <p style="font-size: 13px; color: #856404; margin-bottom: 15px;">
+                                        Uncheck subjects you've already passed or don't want to enroll in this term.
+                                    </p>
+                                    <div class="subject-list" id="subjectList">
+                                        <!-- Subjects will be populated here -->
+                                    </div>
+                                    <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; margin-top: 15px; text-align: center;">
+                                        <small style="color: #6c757d;">
+                                            <i class="fas fa-lightbulb"></i>
+                                            Selected subjects will appear in your curriculum preview below
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <!-- Enhanced Curriculum Preview -->
+                                <div class="curriculum-preview" id="curriculumPreview">
+                                    <div class="curriculum-header">
+                                        <h3><i class="fas fa-list-alt"></i> Your Enrolled Subjects</h3>
+                                        <p style="font-size: 14px; opacity: 0.9;">Preview of subjects for your selected program and term</p>
+                                    </div>
+                                    
+                                    <table class="curriculum-table" id="previewTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Code</th>
+                                                <th>Description</th>
+                                                <th>Section</th>
+                                                <th>Units</th>
+                                                <th>Pre-Req</th>
+                                                <th>Day</th>
+                                                <th>Time</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="previewTableBody">
+                                            <!-- Subjects will be populated here -->
+                                        </tbody>
+                                    </table>
+                                    
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f8f9fa; font-weight: 600; color: #2c3e50; font-size: 14px;">
+                                        <div>
+                                            <i class="fas fa-book" style="color: #3498db;"></i>
+                                            Total Subjects: <span id="totalSubjectsPreview">0</span>
+                                        </div>
+                                        <div>
+                                            <i class="fas fa-calculator" style="color: #3498db;"></i>
+                                            Total Units: <span id="totalUnitsPreview">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Enhanced Action Buttons -->
+                                <div class="button-group">
+                                    <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                                        <i class="fas fa-undo"></i>
+                                        Reset Form
+                                    </button>
+                                    <button type="submit" class="btn btn-success" id="submitBtn">
+                                        <i class="fas fa-paper-plane"></i>
+                                        Submit Enrollment
+                                    </button>
+                                </div>
+
+                                <!-- Enhanced Success Message -->
+                                <div class="success-message" id="successMessage">
+                                    <i class="fas fa-check-circle" style="font-size: 24px; margin-bottom: 10px;"></i>
+                                    <strong style="font-size: 16px;">Enrollment Submitted Successfully!</strong>
+                                    <p style="font-size: 14px; margin-top: 8px; opacity: 0.9;">
+                                        Your enrollment request has been submitted. Please wait for verification of your payment.
+                                    </p>
+                                    <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 6px; margin-top: 15px;">
+                                        <small><i class="fas fa-clock"></i> Expected verification time: 1-2 business days</small>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FIXED: Student Announcements Section -->
+<div class="content-section" id="announcements">
+    <div class="announcements-container">
+        <div class="announcements-header">
+            <i class="fas fa-bullhorn"></i>
+            <h2>Announcements</h2>
+            <div class="announcement-stats">
+                <div class="stat-item">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="urgentCount">0 Urgent</span> <!-- FIXED ID -->
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-star"></i>
+                    <span id="unreadCount">0 Unread</span> <!-- FIXED ID -->
+                </div>
+            </div>
+        </div>
+
+        <div class="announcements-content">
+            <div class="announcements-filters">
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="urgent">Urgent</button>
+                    <button class="filter-btn" data-filter="important">Important</button>
+                    <button class="filter-btn" data-filter="general">General</button>
+                </div>
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" placeholder="Search announcements..." id="announcementSearchInput"> <!-- FIXED ID -->
+                </div>
+            </div>
+
+            <!-- FIXED: Correct container ID -->
+            <div class="announcements-list" id="announcementsList">
+                <!-- Loading state -->
+                <div class="loading-state" id="loadingSpinner">
+                    <div class="loading-spinner"></div>
+                    <span>Loading announcements...</span>
+                </div>
+
+                <!-- No announcements state -->
+                <div class="no-announcements" id="noAnnouncementsMessage" style="display: none;">
+                    <i class="fas fa-bullhorn"></i>
+                    <h3>No Announcements Found</h3>
+                    <p>There are currently no announcements to display. Check back later for updates from your faculty.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIXED: Student Announcement View Modal -->
+    <div id="studentAnnouncementModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99999; justify-content: center; align-items: center;">
+        <div class="modal-content announcement-modal-content" style="background: white; border-radius: 12px; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto; margin: 20px; position: relative;">
+            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #e0e6ed;">
+                <h2 id="studentModalTitle" style="margin: 0; color: #333;">Announcement Details</h2>
+                <button class="modal-close" id="studentModalClose" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666; padding: 0; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 20px;">
+                <div class="announcement-badges-container" id="studentModalBadges" style="margin-bottom: 15px;"></div>
+                <div class="announcement-content-wrapper">
+                    <h3 id="studentModalAnnouncementTitle" style="margin: 0 0 15px 0; color: #1a1a1a; font-size: 24px; line-height: 1.3;"></h3>
+                    <div id="studentModalContent" style="margin-bottom: 20px; line-height: 1.6; color: #4a4a4a;"></div>
+                    <div id="studentModalImageContainer" class="modal-image-container" style="display: none; margin: 20px 0; text-align: center;">
+                        <img id="studentModalImage" alt="Announcement image" style="max-width: 100%; height: auto; border-radius: 8px; border: 2px solid #dee2e6;">
+                    </div>
+                    <div id="studentModalDocumentContainer" class="modal-document-container" style="display: none; margin: 20px 0;">
+                        <div id="studentModalDocumentInfo"></div>
+                    </div>
+                </div>
+                <div class="announcement-meta-info" id="studentModalMeta" style="margin-top: 20px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- REQUIRED: Add hidden student info for the JS to read -->
+<div id="student-info" style="display: none;" 
+     data-student-course="BSBA" 
+     data-student-year="1st_year">
+</div>
+
+            <!-- Schedule Section -->
+<div class="content-section" id="schedule">
+    <div class="section-header">
+        <div class="header-content">
+            <h2>
+                <i class="fas fa-calendar-alt"></i>
+                My Class Schedule
+            </h2>
+            <p class="section-description">View your enrolled subjects and class schedule</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-outline" onclick="refreshSchedule()">
+                <i class="fas fa-sync-alt"></i>
+                Refresh
+            </button>
+            <button class="btn btn-primary" onclick="printSchedule()">
+                <i class="fas fa-print"></i>
+                Print Schedule
+            </button>
+        </div>
+    </div>
+
+    <!-- Schedule Status Banner -->
+    <div class="schedule-status" id="scheduleStatus">
+        <div class="status-card">
+            <div class="status-icon">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <div class="status-content">
+                <h4>Loading Schedule...</h4>
+                <p>Fetching your enrolled subjects and class schedule</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Academic Info Card -->
+    <div class="academic-info-card" id="academicInfo" style="display: none;">
+        <div class="info-grid">
+            <div class="info-item">
+                <label>Student ID</label>
+                <span id="studentIdDisplay">-</span>
+            </div>
+            <div class="info-item">
+                <label>Program</label>
+                <span id="programDisplay">-</span>
+            </div>
+            <div class="info-item">
+                <label>Year Level</label>
+                <span id="yearLevelDisplay">-</span>
+            </div>
+            <div class="info-item">
+                <label>Semester</label>
+                <span id="semesterDisplay">-</span>
+            </div>
+            <div class="info-item">
+                <label>Academic Year</label>
+                <span id="academicYearDisplay">-</span>
+            </div>
+            <div class="info-item">
+                <label>Total Units</label>
+                <span id="totalUnitsDisplay">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Table Container -->
+    <div class="schedule-container" id="scheduleContainer" style="display: none;">
+        <!-- List Schedule View -->
+        <div class="schedule-view" id="listView">
+            <div class="view-header">
+                <h3>Subject List</h3>
+                <div class="schedule-summary">
+                    <span class="summary-item">
+                        <i class="fas fa-book"></i>
+                        <span id="subjectCount">0</span> Subjects
+                    </span>
+                    <span class="summary-item">
+                        <i class="fas fa-clock"></i>
+                        <span id="totalHours">0</span> Hours/Week
+                    </span>
+                </div>
+            </div>
+
+            <!-- Subjects Table -->
+            <div class="subjects-table-container">
+                <table class="subjects-table" id="subjectsTable">
+                    <thead>
+                        <tr>
+                            <th>Subject Code</th>
+                            <th>Subject Name</th>
+                            <th>Units</th>
+                            <th>Section</th>
+                            <th>Schedule</th>
+                            <th>Instructor</th>
+                            <th>Room</th>
+                            <th>Prerequisites</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subjectsTableBody">
+                        <!-- Subject rows will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Schedule Summary -->
+            <div class="schedule-summary-card">
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <label>Total Subjects</label>
+                        <span id="totalSubjects">0</span>
+                    </div>
+                    <div class="summary-item">
+                        <label>Total Units</label>
+                        <span id="summaryTotalUnits">0</span>
+                    </div>
+                    <div class="summary-item">
+                        <label>Lab Subjects</label>
+                        <span id="labSubjects">0</span>
+                    </div>
+                    <div class="summary-item">
+                        <label>Lecture Subjects</label>
+                        <span id="lectureSubjects">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="emptySchedule" style="display: none;">
+        <div class="empty-icon">
+            <i class="fas fa-calendar-times"></i>
+        </div>
+        <div class="empty-content">
+            <h3>No Schedule Available</h3>
+            <p>You don't have any enrolled subjects yet. Submit an enrollment request to get started.</p>
+            <button class="btn btn-primary" onclick="goToEnrollment()">
+                <i class="fas fa-plus"></i>
+                Enroll Now
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-state" id="scheduleLoading" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>Loading your class schedule...</p>
+    </div>
+</div>
+
+<!-- Class Details Modal -->
+<div class="modal" id="classDetailsModal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalSubjectTitle">Subject Details</h3>
+            <button class="modal-close" onclick="closeClassDetailsModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="subject-details-grid">
+                <div class="detail-item">
+                    <label>Subject Code</label>
+                    <span id="modalSubjectCode">-</span>
+                </div>
+                <div class="detail-item">
+                    <label>Subject Name</label>
+                    <span id="modalSubjectName">-</span>
+                </div>
+                <div class="detail-item">
+                    <label>Units</label>
+                    <span id="modalUnits">-</span>
+                </div>
+                <div class="detail-item">
+                    <label>Section</label>
+                    <span id="modalSection">-</span>
+                </div>
+                <div class="detail-item">
+                    <label>Instructor</label>
+                    <span id="modalInstructor">-</span>
+                </div>
+                <div class="detail-item">
+                    <label>Room</label>
+                    <span id="modalRoom">-</span>
+                </div>
+                <div class="detail-item">
+                    <label>Schedule</label>
+                    <span id="modalSchedule">-</span>
+                </div>
+                <div class="detail-item">
+                    <label>Prerequisites</label>
+                    <span id="modalPrerequisites">-</span>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeClassDetailsModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+
+
+            <!-- Grades Section -->
+            <div class="content-section" id="grades">
+                
+        
+                    <div class="grades-container">
+        <!-- Header Section -->
+        <div class="grades-header">
+            <h2><i class="fas fa-graduation-cap"></i> Academic Grades</h2>
+            <div class="student-info" id="studentInfo">
+                <h3 id="studentName">Loading...</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Student ID</div>
+                        <div class="info-value" id="gradesStudentId">-</div> <!-- Changed from studentId to gradesStudentId -->
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Program</div>
+                        <div class="info-value" id="studentProgram">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Year Level</div>
+                        <div class="info-value" id="studentYear">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Current Semester</div>
+                        <div class="info-value" id="currentSemester">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Section -->
+        <div class="grades-content">
+            <div class="download-buttons">
+                <button class="download-button pdf" onclick="downloadGradesPDF()">
+                    <i class="fas fa-file-pdf"></i> Download PDF
+                </button>
+                <button class="download-button excel" onclick="downloadGradesExcel()">
+                    <i class="fas fa-file-excel"></i> Download Excel
+                </button>
+            </div>
+            <!-- REPLACE THE REFRESH BUTTON IN YOUR HTML -->
+            <button class="refresh-button" onclick="refreshGrades()">
+                <i class="fas fa-sync-alt"></i> Refresh Grades
+            </button>
+
+            <!-- GPA Summary Cards -->
+            <div class="gpa-summary" id="gpaSummary">
+                <div class="gpa-card">
+                    <div class="gpa-value" id="currentGPA">-.--</div>
+                    <div class="gpa-label">Current Semester GPA</div>
+                    <div class="gpa-status" id="currentStatus">Calculating...</div>
+                </div>
+                <div class="gpa-card">
+                    <div class="gpa-value" id="overallGPA">-.--</div>
+                    <div class="gpa-label">Cumulative GPA</div>
+                    <div class="gpa-status" id="overallStatus">Calculating...</div>
+                </div>
+                <div class="gpa-card">
+                    <div class="gpa-value" id="totalUnits">--</div>
+                    <div class="gpa-label">Total Units Completed</div>
+                    <div class="gpa-status" id="completionRate">--%</div>
+                </div>
+            </div>
+
+            <!-- Semester Tabs -->
+            <div class="semester-tabs" id="semesterTabs">
+                <!-- Dynamically populated -->
+            </div>
+
+            <!-- Grades Table -->
+            <div class="subjects-table">
+                <div class="table-header">
+                    <h3 id="semesterTitle">Current Semester Grades</h3>
+                    <div class="academic-year" id="academicYear">Academic Year 2024-2025</div>
+                </div>
+                
+                <div id="gradesTableContainer">
+                    
+                </div>
+            </div>
+
+            <!-- Statistics Summary -->
+            <div class="summary-stats" id="summaryStats" style="display: none;">
+                <div class="stat-card">
+                    <div class="stat-value" id="gradesTotalSubjects">0</div>
+                    <div class="stat-label">Total Subjects</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="passedSubjects">0</div>
+                    <div class="stat-label">Passed Subjects</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="unitsEarned">0</div>
+                    <div class="stat-label">Units Earned</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="averageGrade">-.--</div>
+                    <div class="stat-label">Average Grade</div>
+                </div>
+            </div>
+
+            <!-- GPA Calculator -->
+            <div class="gpa-calculator">
+                <div class="calculator-header">
+                    <h3><i class="fas fa-calculator"></i> Grade Scale Reference</h3>
+                    <p>Understanding your academic performance</p>
+                </div>
+                
+                <div class="grade-scale">
+                    <div class="scale-item">
+                        <div class="scale-grade" style="color: #27ae60;">1.00 - 1.25</div>
+                        <div class="scale-range">97-100% | Excellent</div>
+                    </div>
+                    <div class="scale-item">
+                        <div class="scale-grade" style="color: #2980b9;">1.50 - 1.75</div>
+                        <div class="scale-range">91-96% | Very Good</div>
+                    </div>
+                    <div class="scale-item">
+                        <div class="scale-grade" style="color: #f39c12;">2.00 - 2.25</div>
+                        <div class="scale-range">85-90% | Good</div>
+                    </div>
+                    <div class="scale-item">
+                        <div class="scale-grade" style="color: #e67e22;">2.50 - 3.00</div>
+                        <div class="scale-range">75-84% | Satisfactory</div>
+                    </div>
+                    <div class="scale-item">
+                        <div class="scale-grade" style="color: #e74c3c;">4.00 - 5.00</div>
+                        <div class="scale-range">70-74% | Failed/Conditional</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+            </div>
+
+            <!-- Messages Section -->
+            <div class="content-section" id="messages">
+                <div class="chat-container">
+                    <!-- Left Panel - Contacts -->
+                    <div class="contacts-panel" id="contactsPanel">
+                        <div class="contacts-header">
+                            <h3>Messages</h3>
+                            
+                        </div>
+
+                        <div class="search-section">
+                            <div class="search-wrapper">
+                                <i class="fas fa-search"></i>
+                                <input type="text" class="search-input" placeholder="Search contacts..." id="searchInput">
+                            </div>
+                            <div class="role-filters">
+                                <button class="role-tag active" onclick="filterByRole('all')">All</button>
+                                <button class="role-tag" onclick="filterByRole('faculty')">Faculty</button>
+                                <button class="role-tag" onclick="filterByRole('admin')">Admin</button>
+                                <button class="role-tag" onclick="filterByRole('registrar')">Registrar</button>
+                            </div>
+                        </div>
+
+                        <div class="contacts-list" id="contactsList">
+                            <!-- Contacts will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Right Panel - Chat -->
+                    <div class="chat-panel">
+                        <div class="chat-header" id="chatHeader" style="display: none;">
+                            <button class="mobile-back-btn" onclick="showContactsList()">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                            <div class="chat-user-info">
+                                <div class="chat-avatar" id="chatAvatar"></div>
+                                <div class="chat-user-details">
+                                    <h4 id="chatUserName"></h4>
+                                    <p id="chatUserRole"></p>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        <div class="chat-messages" id="chatMessages">
+                            <div class="empty-chat">
+                                <i class="fas fa-comments"></i>
+                                <h3>Welcome to Academic Chat</h3>
+                                <p>Select a contact from the left panel to start a conversation with faculty, administrators, or professors.</p>
+                            </div>
+                        </div>
+
+                        <div class="chat-input-container" id="chatInputContainer" style="display: none;">
+                            <div class="chat-input-wrapper">
+                                <textarea class="chat-input" placeholder="Type your message..." id="messageInput" rows="1"></textarea>
+                                <div class="input-actions">
+                                    <button class="input-action-btn" title="Attach File">
+                                        <i class="fas fa-paperclip"></i>
+                                    </button>
+                                    
+                                    <button class="input-action-btn send-btn" onclick="sendMessage()" title="Send Message">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Section -->
+            <div class="content-section" id="profile">
+                <h2 style="display: none;">Profile</h2>
+                <div class="profile-form-container">
+                    <div class="profile-form-header">
+                        <i class="fas fa-user-circle fa-lg"></i>
+                        <h2>Complete Your Profile</h2>
+                    </div>
+                    
+                    <div id="success-message" class="success-message">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Profile updated successfully!</span>
+                    </div>
+                    
+                    <form id="profile-form">
+                        <div class="profile-avatar-upload">
+                            <div class="profile-avatar" id="preview-avatar">
+                                <i class="fas fa-user"></i>
+                                <div class="avatar-upload-btn">
+                                    <i class="fas fa-camera"></i>
+                                    <input type="file" id="avatar-file-input" accept="image/*">
+                                </div>
+                            </div>
+                            <span class="form-notice">Click the camera icon to upload a profile photo</span>
+                        </div>
+                        
+                        <div class="form-section">
+                            <div class="form-section-title">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Personal Information</span>
+                            </div>
+                            <div class="form-content">
+                                <div class="form-row">
+                                    <div class="form-col">
+                                        <div class="form-group">
+                                            <label for="firstName">First Name <span class="required-field">*</span></label>
+                                            <input type="text" class="form-control" id="firstName" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-col">
+                                        <div class="form-group">
+                                            <label for="lastName">Last Name <span class="required-field">*</span></label>
+                                            <input type="text" class="form-control" id="lastName" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="displayName">Display Name <span class="required-field">*</span></label>
+                                    <input type="text" class="form-control" id="displayName" required>
+                                    <span class="form-notice">This is how your name will appear on the platform</span>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="email">Email Address <span class="required-field">*</span></label>
+                                    <input type="email" class="form-control" id="email" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="tel" class="form-control" id="phone">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="dateOfBirth">Date of Birth</label>
+                                    <input type="date" class="form-control" id="dateOfBirth">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="homeAddress">Home Address</label>
+                                    <textarea class="form-control" id="homeAddress" rows="3" placeholder="Enter your complete home address"></textarea>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-col">
+                                        <div class="form-group">
+                                            <label for="city">City</label>
+                                            <input type="text" class="form-control" id="city">
+                                        </div>
+                                    </div>
+                                    <div class="form-col">
+                                        <div class="form-group">
+                                            <label for="postalCode">Postal Code</label>
+                                            <input type="text" class="form-control" id="postalCode">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-col">
+                                        <div class="form-group">
+                                            <label for="province">Province/State</label>
+                                            <input type="text" class="form-control" id="province">
+                                        </div>
+                                    </div>
+                                    <div class="form-col">
+                                        <div class="form-group">
+                                            <label for="country">Country</label>
+                                            <select class="form-control" id="country">
+                                                
+                                                <option value="philippines">Philippines</option>
+                                                
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <div class="form-section-title">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>Academic Information</span>
+                            </div>
+                            <div class="form-content">
+                                <div class="form-group">
+    <!-- ADD THIS: Freshman Guide Notice -->
+    <div class="freshman-guide-notice" style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%); color: black; padding: 12px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #ff6b6b;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-graduation-cap" style="font-size: 20px; color: #fd7e14;"></i>
+            <div>
+                <strong>📢 New Students (Freshmen):</strong>
+                <p style="margin: 5px 0 0 0; font-size: 14px;">Don't have a Student ID yet? Enter <strong>"N/A"</strong> for now. After completing your profile, please <strong>message the Registrar</strong> to request your official Student ID assignment.</p>
+            </div>
+        </div>
+    </div>
+    
+    <label for="studentId">Student ID <span class="required-field">*</span></label>
+    <input type="text" class="form-control" id="studentId" name="studentId" required 
+           placeholder="Enter Student ID (e.g., 0509-1022-2298) or N/A for new students">
+    <span class="form-notice">Format: XXXX-XXXX-XXXX or enter "N/A" if you're a new student without an assigned ID</span>
+</div>
+
+                                <!-- Add this right after the Student ID field and before the Major/Year Level row -->
+                                <div class="form-group">
+                                    <label for="studentType">Student Type <span class="required-field">*</span></label>
+                                    <select class="form-control" id="studentType" name="studentType" required>
+                                        <option value="">Select Student Type</option>
+                                        <option value="regular">Regular</option>
+                                        <option value="irregular">Irregular</option>
+                                    </select>
+
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-col">
+                                        <div class="form-group">
+                                            <label for="major">Major/Program <span class="required-field">*</span></label>
+                                            <select class="form-control" id="major" required>
+                                                <option value="">Select your major</option>
+                                                <option value="computer_science">Bachelor of Science in Computer Science</option>
+                                                <option value="information_technology">Bachelor of Science in Information Technology</option>
+                                                <option value="information_system">Bachelor of Science in Information Systems</option>
+                                                <option value="business_administration">Bachelor of Science in Business Administration</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-col">
+                                        <div class="form-group">
+                                            <label for="yearLevel">Year Level <span class="required-field">*</span></label>
+                                            <select class="form-control" id="yearLevel" required>
+                                                <option value="">Select year level</option>
+                                                <option value="1st_year">1st Year</option>
+                                                <option value="2nd_year">2nd Year</option>
+                                                <option value="3rd_year">3rd Year</option>
+                                                <option value="4th_year">4th Year</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="button-group">
+                            <button type="button" class="btn btn-secondary" id="resetBtn">Reset</button>
+                            <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            
+
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+       // Complete Dashboard Script with Authentication
+// Handles both authentication and all dashboard functionality
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("🎯 Dashboard loaded - checking authentication...");
+    
+    // Initialize notification bell first
+    setTimeout(() => {
+        initializeNotificationBell();
+    }, 100);
+
+    // ===== AUTHENTICATION FUNCTIONS =====
+    
+    // Check if user is authenticated
+    
+    
+    // ===== DASHBOARD INITIALIZATION =====
+    
+    // Initialize dashboard with offline support
+    function initializeDashboard() {
+        console.log("🏁 Initializing dashboard...");
+        
+        if (!checkAuthentication()) {
+            return;
+        }
+        
+        const user = getCurrentUser();
+        if (!user) {
+            console.log("❌ No user data found, redirecting to login...");
+            window.location.href = '../login.html';
+            return;
+        }
+        
+        console.log("👤 Current user:", user);
+        
+        // Get user info for display
+        const userName = user.username || user.name || 'User';
+        const userEmail = user.email || sessionStorage.getItem('userEmail') || '';
+        const userRole = user.role || 'Student';
+        
+        // Update UI with user info
+        const userNameElements = document.querySelectorAll('[data-user-name]');
+        userNameElements.forEach(el => {
+            el.textContent = userName;
+        });
+        
+        // Set user role
+        const userRoleElements = document.querySelectorAll('[data-user-role]');
+        userRoleElements.forEach(el => {
+            el.textContent = userRole;
+        });
+        
+        // Update specific elements
+        const userNameDisplay = document.getElementById('userNameDisplay');
+        const userRoleDisplay = document.getElementById('userRoleDisplay');
+        const userMenuName = document.getElementById('userMenuName');
+        const userMenuEmail = document.getElementById('userMenuEmail');
+        const welcomeMessage = document.getElementById('dynamicWelcomeMessage');
+        const userDisplayName = document.getElementById('userDisplayName');
+        
+
+        if (userNameDisplay) userNameDisplay.textContent = userName;
+        if (userRoleDisplay) userRoleDisplay.textContent = userRole.charAt(0).toUpperCase() + userRole.slice(1);
+        if (userMenuName) userMenuName.textContent = userName;
+        if (userMenuEmail) userMenuEmail.textContent = userEmail;
+        if (userDisplayName && userName) {
+    userDisplayName.textContent = userName;
+}
+if (welcomeMessage && userName) {
+    // Keep the full welcome message structure
+    welcomeMessage.innerHTML = `Welcome, <span id="userDisplayName">${userName}</span>`;
+}
+        
+        // Load dashboard data with error handling
+        loadDashboardData();
+        
+        // Clear login flags
+        sessionStorage.removeItem('justLoggedIn');
+        sessionStorage.removeItem('skipInitialServerCheck');
+        
+        console.log("✅ Dashboard initialized successfully");
+    }
+    
+    // ===== UI FUNCTIONALITY =====
+
+// Sidebar toggle functionality
+const sidebar = document.getElementById('sidebar');
+const sidebarToggle = document.getElementById('sidebarToggle');
+if (sidebarToggle && sidebar) {
+    sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+    });
+}
+
+// Navigation functionality
+const navItems = document.querySelectorAll('.nav-item[data-content]');
+const contentSections = document.querySelectorAll('.content-section');
+navItems.forEach(item => {
+    item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        navItems.forEach(nav => nav.classList.remove('active'));
+        item.classList.add('active');
+        contentSections.forEach(section => section.classList.remove('active'));
+        const targetContent = item.getAttribute('data-content');
+        const targetSection = document.getElementById(targetContent);
+        if (targetSection) targetSection.classList.add('active');
+    });
+});
+
+// Dropdown functionality
+const coursesDropdown = document.getElementById('coursesDropdown');
+const coursesMenu = document.getElementById('coursesMenu');
+if (coursesDropdown && coursesMenu) {
+    coursesDropdown.addEventListener('click', (e) => {
+        e.stopPropagation();
+        coursesMenu.classList.toggle('active');
+        coursesDropdown.classList.toggle('active');
+    });
+}
+
+// Dark mode toggle
+const darkModeToggle = document.getElementById('darkModeToggle');
+if (darkModeToggle) {
+    darkModeToggle.addEventListener('change', function() {
+        document.body.classList.toggle('dark-mode');
+    });
+}
+
+// Replace the existing initializeNotificationBell function in the main script section of studentdashboard.html
+function initializeNotificationBell() {
+    console.log('Initializing notification bell...');
+    
+    const notificationBell = document.getElementById('notificationBell');
+    const notificationDropdown = document.getElementById('notificationDropdown');
+    const clearAllBtn = document.getElementById('clearAllBtn');
+    
+    if (!notificationBell || !notificationDropdown) {
+        console.error('Notification elements not found');
+        return;
+    }
+    
+    console.log('Notification elements found, adding event listeners...');
+    
+    // Bell click handler with improved logic
+    notificationBell.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        console.log('Notification bell clicked');
+        
+        // Toggle dropdown visibility
+        const isVisible = notificationDropdown.style.display === 'block';
+        
+        if (isVisible) {
+            notificationDropdown.style.display = 'none';
+            notificationDropdown.classList.remove('show');
+        } else {
+            notificationDropdown.style.display = 'block';
+            notificationDropdown.classList.add('show');
+            loadNotifications();
+        }
+    });
+    
+    // Clear all notifications
+    if (clearAllBtn) {
+        clearAllBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            clearAllNotifications();
+        });
+    }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!notificationBell.contains(e.target) && !notificationDropdown.contains(e.target)) {
+            notificationDropdown.style.display = 'none';
+            notificationDropdown.classList.remove('show');
+        }
+    });
+    
+    // Prevent dropdown from closing when clicking inside it
+    notificationDropdown.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+    
+    console.log('Notification bell initialized successfully');
+}
+
+// Load notifications function
+function loadNotifications() {
+    const notificationList = document.getElementById('notificationList');
+    if (!notificationList) return;
+    
+    // For now, show placeholder content - replace with actual API call later
+    notificationList.innerHTML = `
+        <div class="no-notifications">
+            <i class="fas fa-bell-slash"></i>
+            <p>No new notifications</p>
+        </div>
+    `;
+}
+
+// Clear all notifications function
+function clearAllNotifications() {
+    const notificationList = document.getElementById('notificationList');
+    const notificationBadge = document.getElementById('notificationBadge');
+    
+    if (notificationList) {
+        notificationList.innerHTML = `
+            <div class="no-notifications">
+                <i class="fas fa-bell-slash"></i>
+                <p>No new notifications</p>
+            </div>
+        `;
+    }
+    
+    if (notificationBadge) {
+        notificationBadge.style.display = 'none';
+    }
+}
+
+    // ===== IMPROVED AVATAR FUNCTIONALITY =====
+    
+    // Generate unique storage key for user avatar
+    function getUserAvatarKey(userId) {
+        return `userAvatar_${userId}`;
+    }
+    
+    // Load user-specific avatar
+    function loadUserAvatar(userId) {
+        const avatarKey = getUserAvatarKey(userId);
+        const savedAvatar = localStorage.getItem(avatarKey);
+        
+        if (savedAvatar) {
+            updateAllAvatars(savedAvatar);
+            // Also update chat avatar if chat system is loaded
+            if (window.chat && window.chat.currentUser) {
+                window.chat.currentUser.avatar = savedAvatar;
+            }
+        }
+    }
+    
+    
+
+    // ===== CHAT AVATAR INTEGRATION =====
+    
+    // Function to update chat avatars (called from chat.js)
+    window.updateChatAvatars = function(imageData) {
+        // Update any chat-specific avatar elements
+        const chatAvatars = document.querySelectorAll('.chat-avatar, .message-avatar');
+        chatAvatars.forEach(avatar => {
+            if (avatar.tagName === 'IMG') {
+                avatar.src = imageData;
+            } else {
+                avatar.innerHTML = `<img src="${imageData}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            }
+        });
+    };
+    
+    // Function to get current user avatar for chat system
+    window.getUserAvatar = function(userId) {
+        const avatarKey = getUserAvatarKey(userId);
+        return localStorage.getItem(avatarKey);
+    };
+
+    // Logout functionality
+    window.logout = function() {
+        console.log("🚪 Logging out...");
+        sessionStorage.clear();
+        window.location.href = '../login.html';
+    };
+
+    // Multiple logout buttons functionality
+    const logoutBtns = [
+        document.getElementById('logoutBtn'),
+        document.getElementById('userMenuLogout')
+    ];
+    logoutBtns.forEach(btn => {
+        if (btn) {
+            btn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to logout?')) {
+                    sessionStorage.clear();
+                    window.location.href = '../index.html';
+                }
+            });
+        }
+    });
+
+    // Search functionality
+    const searchInput = document.querySelector('.search-input');
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                alert('Searching for: ' + this.value);
+                this.value = '';
+            }
+        });
+    }
+
+    // Card hover effects
+    const cards = document.querySelectorAll('.dashboard-card');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+            this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.15)';
+        });
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+        });
+    });
+
+    // Initialize sidebar based on screen size
+    function initializeSidebar() {
+        const mainContent = document.getElementById('mainContent');
+        if (window.innerWidth <= 768) {
+            if (sidebar) sidebar.classList.add('collapsed');
+            if (mainContent) mainContent.style.marginLeft = '0';
+        } else {
+            if (sidebar) sidebar.classList.remove('collapsed');
+            if (mainContent) mainContent.style.marginLeft = '250px';
+        }
+    }
+    
+    initializeSidebar();
+    window.addEventListener('resize', initializeSidebar);
+
+    // ===== ENROLLMENT FUNCTIONALITY =====
+    
+    // Enrollment form toggle
+    window.toggleEnrollmentForm = function() {
+        const container = document.getElementById('enrollmentContainer');
+        const btn = document.querySelector('.enroll-btn');
+        
+        if (container && btn) {
+            if (container.classList.contains('active')) {
+                container.classList.remove('active');
+                btn.innerHTML = '<i class="fas fa-plus-circle"></i>Enroll Now';
+            } else {
+                container.classList.add('active');
+                btn.innerHTML = '<i class="fas fa-minus-circle"></i>Hide Form';
+            }
+        }
+    };
+
+    // Enrollment form functionality
+    const enrollmentForm = document.getElementById('enrollmentForm');
+    if (enrollmentForm) {
+        // Program selection
+        const programRadios = document.querySelectorAll('input[name="program"]');
+        programRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.querySelectorAll('.selection-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                this.closest('.selection-card').classList.add('selected');
+                
+                const selectedProgram = document.getElementById('selectedProgram');
+                if (selectedProgram) {
+                    selectedProgram.textContent = this.value;
+                    selectedProgram.classList.remove('not-selected');
+                }
+            });
+        });
+
+        // Year level selection
+        const yearRadios = document.querySelectorAll('input[name="yearLevel"]');
+        yearRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.querySelectorAll('.year-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                this.closest('.year-card').classList.add('selected');
+                
+                const selectedYear = document.getElementById('selectedYear');
+                if (selectedYear) {
+                    selectedYear.textContent = this.value;
+                    selectedYear.classList.remove('not-selected');
+                }
+            });
+        });
+
+        // Term selection
+        const termRadios = document.querySelectorAll('input[name="academicTerm"]');
+        termRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.querySelectorAll('.term-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                this.closest('.term-card').classList.add('selected');
+                
+                const selectedTerm = document.getElementById('selectedTerm');
+                if (selectedTerm) {
+                    selectedTerm.textContent = this.value;
+                    selectedTerm.classList.remove('not-selected');
+                }
+            });
+        });
+
+        // Form submission
+        enrollmentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const program = document.querySelector('input[name="program"]:checked');
+            const year = document.querySelector('input[name="yearLevel"]:checked');
+            const term = document.querySelector('input[name="academicTerm"]:checked');
+            
+            if (!program || !year || !term) {
+                alert('Please select all required fields: Program, Year Level, and Academic Term.');
+                return;
+            }
+            
+            const successMessage = document.getElementById('successMessage');
+            if (successMessage) {
+                successMessage.classList.add('show');
+                successMessage.scrollIntoView({ behavior: 'smooth' });
+                
+                setTimeout(() => {
+                    if (window.toggleEnrollmentForm) {
+                        window.toggleEnrollmentForm();
+                    }
+                    successMessage.classList.remove('show');
+                }, 3000);
+            }
+        });
+    }
+
+    // Reset enrollment form
+    window.resetForm = function() {
+        const enrollmentForm = document.getElementById('enrollmentForm');
+        if (enrollmentForm) {
+            enrollmentForm.reset();
+            
+            document.querySelectorAll('.selection-card, .year-card, .term-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            const summaryElements = ['selectedProgram', 'selectedYear', 'selectedTerm'];
+            summaryElements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = 'Not selected';
+                    element.classList.add('not-selected');
+                }
+            });
+            
+            const successMessage = document.getElementById('successMessage');
+            if (successMessage) {
+                successMessage.classList.remove('show');
+            }
+        }
+    };
+    
+    // ===== INITIALIZE EVERYTHING =====
+    
+    // Initialize the dashboard
+    initializeDashboard();
+    
+    // Add periodic auth check
+    setInterval(() => {
+        if (!checkAuthentication()) {
+            console.log("🔒 Auth check failed, redirecting...");
+            window.location.href = '../login.html';
+        }
+    }, 60000); // Check every minute
+    
+    console.log("✅ Complete dashboard handler loaded");
+});
+
+// ===== PROFILE PAGE FUNCTIONALITY =====
+// This runs separately for profile-specific features
+
+// Function to show temporary messages
+function showTempMessage(message, type = 'info') {
+    let messageEl = document.getElementById('temp-message');
+    if (!messageEl) {
+        messageEl = document.createElement('div');
+        messageEl.id = 'temp-message';
+        messageEl.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 4px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        `;
+        document.body.appendChild(messageEl);
+    }
+    
+    messageEl.textContent = message;
+    switch(type) {
+        case 'success':
+            messageEl.style.backgroundColor = '#28a745';
+            break;
+        case 'error':
+            messageEl.style.backgroundColor = '#dc3545';
+            break;
+        default:
+            messageEl.style.backgroundColor = '#007bff';
+    }
+    
+    messageEl.style.opacity = '1';
+    
+    setTimeout(() => {
+        messageEl.style.opacity = '0';
+    }, 3000);
+}
+
+// Function to update all user displays
+function updateAllUserDisplays(userData) {
+    const sidebarName = document.querySelector('.sidebar .user-info h3');
+    if (sidebarName && userData.displayName) {
+        sidebarName.textContent = userData.displayName;
+    }
+    
+    const userNameDisplay = document.getElementById('userNameDisplay');
+    const userMenuName = document.getElementById('userMenuName');
+    const userMenuEmail = document.getElementById('userMenuEmail');
+    const welcomeMessage = document.getElementById('welcomeMessage');
+    
+    if (userNameDisplay && userData.displayName) {
+        userNameDisplay.textContent = userData.displayName;
+    }
+    
+    if (userMenuName && userData.displayName) {
+        userMenuName.textContent = userData.displayName;
+    }
+    
+    if (userMenuEmail && userData.email) {
+        userMenuEmail.textContent = userData.email;
+    }
+    
+    if (welcomeMessage && userData.displayName) {
+        welcomeMessage.textContent = `Welcome, ${userData.displayName.split(' ')[0]}!`;
+    }
+    
+    const allNameDisplays = document.querySelectorAll('[data-user-name]');
+    allNameDisplays.forEach(element => {
+        if (userData.displayName) {
+            element.textContent = userData.displayName;
+        }
+    });
+    
+    const allEmailDisplays = document.querySelectorAll('[data-user-email]');
+    allEmailDisplays.forEach(element => {
+        if (userData.email) {
+            element.textContent = userData.email;
+        }
+    });
+}
+
+// Add this AFTER the existing search functionality in your script
+// Header Search Functionality - Add this to your existing script
+document.addEventListener('DOMContentLoaded', function() {
+    // Header search functionality
+    const headerSearchInput = document.querySelector('.enhanced-header .search-input');
+    if (headerSearchInput) {
+        headerSearchInput.addEventListener('keyup', function(e) {
+            const query = this.value.trim().toLowerCase();
+            
+            if (e.key === 'Enter' && query) {
+                performGlobalSearch(query);
+            }
+        });
+
+        // Add search icon click functionality
+        const headerSearchIcon = document.querySelector('.enhanced-header .search-container i');
+        if (headerSearchIcon) {
+            headerSearchIcon.addEventListener('click', function() {
+                const query = headerSearchInput.value.trim().toLowerCase();
+                if (query) {
+                    performGlobalSearch(query);
+                }
+            });
+        }
+    }
+});
+
+// Global search function - Add this function to your script
+function performGlobalSearch(query) {
+    console.log('Searching for:', query);
+    
+    // Search in different sections
+    const searchResults = {
+        announcements: searchInAnnouncements(query),
+        schedule: searchInSchedule(query),
+        grades: searchInGrades(query),
+        messages: searchInMessages(query)
+    };
+    
+    // Show search results
+    showSearchResults(query, searchResults);
+}
+
+// Search in announcements - Add this function
+function searchInAnnouncements(query) {
+    const announcements = document.querySelectorAll('.announcement-card');
+    const results = [];
+    
+    announcements.forEach(announcement => {
+        const title = announcement.querySelector('.announcement-title')?.textContent.toLowerCase() || '';
+        const content = announcement.querySelector('.announcement-content')?.textContent.toLowerCase() || '';
+        
+        if (title.includes(query) || content.includes(query)) {
+            results.push({
+                type: 'announcement',
+                title: announcement.querySelector('.announcement-title')?.textContent || 'Announcement',
+                content: content.substring(0, 100) + '...',
+                element: announcement
+            });
+        }
+    });
+    
+    return results;
+}
+
+// Search in schedule - Add this function
+function searchInSchedule(query) {
+    const scheduleItems = document.querySelectorAll('#subjectsTableBody tr');
+    const results = [];
+    
+    scheduleItems.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        if (text.includes(query)) {
+            const subjectCode = item.querySelector('td:first-child')?.textContent || '';
+            const subjectName = item.querySelector('td:nth-child(2)')?.textContent || '';
+            
+            results.push({
+                type: 'schedule',
+                title: `${subjectCode} - ${subjectName}`,
+                content: 'Found in your class schedule',
+                element: item
+            });
+        }
+    });
+    
+    return results;
+}
+
+// Search in grades - Add this function
+function searchInGrades(query) {
+    const gradeItems = document.querySelectorAll('.grades-table tbody tr');
+    const results = [];
+    
+    gradeItems.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        if (text.includes(query)) {
+            const subjectCode = item.querySelector('td:first-child')?.textContent || '';
+            const subjectName = item.querySelector('td:nth-child(2)')?.textContent || '';
+            
+            results.push({
+                type: 'grades',
+                title: `${subjectCode} - ${subjectName}`,
+                content: 'Found in your grades',
+                element: item
+            });
+        }
+    });
+    
+    return results;
+}
+
+// Search in messages - Add this function
+function searchInMessages(query) {
+    const contacts = document.querySelectorAll('.contact-item');
+    const results = [];
+    
+    contacts.forEach(contact => {
+        const name = contact.querySelector('.contact-name')?.textContent.toLowerCase() || '';
+        const role = contact.querySelector('.contact-role')?.textContent.toLowerCase() || '';
+        
+        if (name.includes(query) || role.includes(query)) {
+            results.push({
+                type: 'message',
+                title: contact.querySelector('.contact-name')?.textContent || 'Contact',
+                content: `${contact.querySelector('.contact-role')?.textContent || 'Role'} - Available for messaging`,
+                element: contact
+            });
+        }
+    });
+    
+    return results;
+}
+
+// Show search results - Add this function
+function showSearchResults(query, results) {
+    // Create search results modal/dropdown
+    let searchModal = document.getElementById('searchResultsModal');
+    
+    if (!searchModal) {
+        searchModal = document.createElement('div');
+        searchModal.id = 'searchResultsModal';
+        searchModal.innerHTML = `
+            <div class="search-modal-content">
+                <div class="search-modal-header">
+                    <h3>Search Results</h3>
+                    <button class="search-modal-close">&times;</button>
+                </div>
+                <div class="search-modal-body">
+                    <div class="search-query">Results for: "<span id="searchQuery"></span>"</div>
+                    <div id="searchResultsList"></div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(searchModal);
+        
+        // Add modal styles
+        searchModal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        `;
+        
+        // Add close functionality
+        searchModal.querySelector('.search-modal-close').addEventListener('click', () => {
+            searchModal.style.opacity = '0';
+            searchModal.style.visibility = 'hidden';
+        });
+        
+        // Close on background click
+        searchModal.addEventListener('click', (e) => {
+            if (e.target === searchModal) {
+                searchModal.style.opacity = '0';
+                searchModal.style.visibility = 'hidden';
+            }
+        });
+    }
+    
+    // Update content
+    document.getElementById('searchQuery').textContent = query;
+    const resultsList = document.getElementById('searchResultsList');
+    
+    let allResults = [];
+    Object.values(results).forEach(categoryResults => {
+        allResults = allResults.concat(categoryResults);
+    });
+    
+    if (allResults.length === 0) {
+        resultsList.innerHTML = `
+            <div class="no-results">
+                <i class="fas fa-search"></i>
+                <p>No results found for "${query}"</p>
+            </div>
+        `;
+    } else {
+        resultsList.innerHTML = allResults.map(result => `
+            <div class="search-result-item" onclick="goToResult('${result.type}', '${encodeURIComponent(JSON.stringify(result))}')">
+                <div class="result-icon">
+                    <i class="fas fa-${getResultIcon(result.type)}"></i>
+                </div>
+                <div class="result-content">
+                    <div class="result-title">${result.title}</div>
+                    <div class="result-description">${result.content}</div>
+                    <div class="result-type">${result.type.charAt(0).toUpperCase() + result.type.slice(1)}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    // Show modal
+    searchModal.style.opacity = '1';
+    searchModal.style.visibility = 'visible';
+}
+
+// Get result icon - Add this helper function
+function getResultIcon(type) {
+    switch(type) {
+        case 'announcement': return 'bullhorn';
+        case 'schedule': return 'calendar';
+        case 'grades': return 'chart-bar';
+        case 'message': return 'comments';
+        default: return 'search';
+    }
+}
+
+// Go to search result - Add this function
+function goToResult(type, resultData) {
+    const result = JSON.parse(decodeURIComponent(resultData));
+    
+    // Close search modal
+    document.getElementById('searchResultsModal').style.opacity = '0';
+    document.getElementById('searchResultsModal').style.visibility = 'hidden';
+    
+    // Navigate to the appropriate section
+    switch(type) {
+        case 'announcement':
+            showSection('announcements');
+            break;
+        case 'schedule':
+            showSection('schedule');
+            break;
+        case 'grades':
+            showSection('grades');
+            break;
+        case 'message':
+            showSection('messages');
+            break;
+    }
+    
+    // Highlight the found element after a short delay
+    setTimeout(() => {
+        if (result.element) {
+            result.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            result.element.style.background = '#fff3cd';
+            setTimeout(() => {
+                result.element.style.background = '';
+            }, 2000);
+        }
+    }, 500);
+}
+
+// Add showSection function if not exists - Add this if you don't have it
+function showSection(sectionId) {
+    // Remove active class from all nav items and sections
+    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+    document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+    
+    // Add active class to clicked nav item and corresponding section
+    const navItem = document.querySelector(`[data-content="${sectionId}"]`);
+    const section = document.getElementById(sectionId);
+    
+    if (navItem && section) {
+        navItem.classList.add('active');
+        section.classList.add('active');
+    }
+}        
+
+
+
+    </script>
+    <script src="../authCheck.js" defer></script>
+    <script src="../announcements.js"></script>
+    <script src="studentdashboard.js" defer></script>
+    <script src="../chat.js" defer></script>
+    <script src="../profile.js"></script>
+    <script src="enrollment.js"></script>
+    <script src="schedule.js"></script>
+    <script src="student-grades.js"></script>
+    <script src="../socket-handler.js" defer></script>
+    
+</body>
+</html>

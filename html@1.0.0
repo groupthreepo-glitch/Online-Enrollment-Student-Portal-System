@@ -1,0 +1,238 @@
+// Dashboard Authentication Handler
+// Add this to your student dashboard HTML file
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("🎯 Dashboard loaded - checking authentication...");
+    
+    // Check if user is authenticated
+    function checkAuthentication() {
+        const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
+        const hasToken = sessionStorage.getItem('authToken') !== null;
+        const hasUser = sessionStorage.getItem('userData') !== null;
+        
+        console.log("🔍 Auth status:", { isAuthenticated, hasToken, hasUser });
+        
+        if (!isAuthenticated || !hasToken || !hasUser) {
+            console.log("❌ Not authenticated, redirecting to login...");
+            window.location.href = '../login.html';
+            return false;
+        }
+        
+        return true;
+    }
+    
+    // Get current user data
+    function getCurrentUser() {
+        try {
+            const userData = sessionStorage.getItem('userData');
+            return userData ? JSON.parse(userData) : null;
+        } catch (error) {
+            console.error("Error parsing user data:", error);
+            return null;
+        }
+    }
+    
+    // Enhanced server request with error handling
+    async function makeServerRequest(url, options = {}) {
+        const token = sessionStorage.getItem('authToken');
+        
+        // Add auth header if token exists
+        const defaultHeaders = {
+            'Content-Type': 'application/json',
+            ...(token && { 'Authorization': `Bearer ${token}` })
+        };
+        
+        const requestOptions = {
+            ...options,
+            headers: {
+                ...defaultHeaders,
+                ...options.headers
+            }
+        };
+        
+        try {
+            const response = await fetch(url, requestOptions);
+            
+            // Handle authentication errors
+            if (response.status === 401) {
+                console.log("🔒 Authentication expired, redirecting to login...");
+                sessionStorage.clear();
+                window.location.href = '../login.html';
+                return null;
+            }
+            
+            return response;
+        } catch (error) {
+            console.error("🚨 Server request failed:", error);
+            
+            // Check if we just logged in - if so, don't show error
+            const justLoggedIn = sessionStorage.getItem('justLoggedIn') === 'true';
+            const skipServerCheck = sessionStorage.getItem('skipInitialServerCheck') === 'true';
+            
+            if (justLoggedIn || skipServerCheck) {
+                console.log("⏭️ Skipping server error - just logged in");
+                // Clear the flags after first use
+                sessionStorage.removeItem('justLoggedIn');
+                sessionStorage.removeItem('skipInitialServerCheck');
+                return null;
+            }
+            
+            // Show error for genuine server issues
+            showServerError();
+            return null;
+        }
+    }
+    
+    // Show server error modal/message
+    function showServerError() {
+        // Check if error modal already exists
+        if (document.getElementById('serverErrorModal')) {
+            return;
+        }
+        
+        const errorModal = document.createElement('div');
+        errorModal.id = 'serverErrorModal';
+        errorModal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        `;
+        
+        errorModal.innerHTML = `
+            <div style="
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                text-align: center;
+                max-width: 400px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            ">
+                <h3 style="color: #ef4444; margin-bottom: 15px;">Server Connection Error</h3>
+                <p style="margin-bottom: 20px; color: #666;">
+                    Cannot connect to server. Please check if the server is running on port 3006.
+                </p>
+                <button id="dismissError" style="
+                    background: #3b82f6;
+                    color: white;
+                    padding: 10px 20px;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    margin-right: 10px;
+                ">OK</button>
+                <button id="retryConnection" style="
+                    background: #10b981;
+                    color: white;
+                    padding: 10px 20px;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                ">Retry</button>
+            </div>
+        `;
+        
+        document.body.appendChild(errorModal);
+        
+        // Add event listeners
+        document.getElementById('dismissError').addEventListener('click', () => {
+            errorModal.remove();
+        });
+        
+        document.getElementById('retryConnection').addEventListener('click', () => {
+            errorModal.remove();
+            // Retry loading dashboard data
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+        });
+    }
+    
+    // Initialize dashboard with offline support
+    function initializeDashboard() {
+        console.log("🏁 Initializing dashboard...");
+        
+        if (!checkAuthentication()) {
+            return;
+        }
+        
+        const user = getCurrentUser();
+        if (!user) {
+            console.log("❌ No user data found, redirecting to login...");
+            window.location.href = '../login.html';
+            return;
+        }
+        
+        console.log("👤 Current user:", user);
+        
+        // Update UI with user info
+        const userNameElements = document.querySelectorAll('[data-user-name]');
+        userNameElements.forEach(el => {
+            el.textContent = user.username || user.name || 'User';
+        });
+        
+        // Set user role
+        const userRoleElements = document.querySelectorAll('[data-user-role]');
+        userRoleElements.forEach(el => {
+            el.textContent = user.role || 'Student';
+        });
+        
+        // Load dashboard data with error handling
+        loadDashboardData();
+        
+        // Clear login flags
+        sessionStorage.removeItem('justLoggedIn');
+        sessionStorage.removeItem('skipInitialServerCheck');
+        
+        console.log("✅ Dashboard initialized successfully");
+    }
+    
+    // Load dashboard data with fallback
+    async function loadDashboardData() {
+        console.log("📊 Loading dashboard data...");
+        
+        // Try to load announcements
+        try {
+            const response = await makeServerRequest('http://localhost:3006/api/announcements');
+            if (response && response.ok) {
+                const data = await response.json();
+                console.log("📢 Announcements loaded:", data);
+                // Update announcements UI here
+            }
+        } catch (error) {
+            console.log("⚠️ Failed to load announcements, using offline mode");
+            // Show offline message or cached data
+        }
+        
+        // Try to load other data...
+        // Add similar blocks for grades, schedules, etc.
+        
+        console.log("📊 Dashboard data loading complete");
+    }
+    
+    // Logout function
+    window.logout = function() {
+        console.log("🚪 Logging out...");
+        sessionStorage.clear();
+        window.location.href = '../login.html';
+    };
+    
+    // Initialize the dashboard
+    initializeDashboard();
+    
+    // Add periodic auth check
+    setInterval(() => {
+        if (!checkAuthentication()) {
+            console.log("🔒 Auth check failed, redirecting...");
+            window.location.href = '../login.html';
+        }
+    }, 60000); // Check every minute
+    
+    console.log("✅ Dashboard authentication handler loaded");
+});
